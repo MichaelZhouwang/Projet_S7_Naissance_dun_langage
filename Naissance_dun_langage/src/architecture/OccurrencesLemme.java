@@ -1,111 +1,65 @@
 package architecture;
 
+import java.util.ArrayList;
+
 public class OccurrencesLemme {
 	private Lemme lemme;
-	
-	private int premiereEmission;
-	private int derniereEmission;
-	private int nombreEmissions;
-	
-	private int premiereReception;
-	private int derniereReception;
-	private int nombreReceptions;
-	
-	private int premiereMemorisation;
-	private int derniereMemorisation;
-	private int nombreMemorisations;
+
+	private ArrayList<Integer> emissions;
+	private ArrayList<Integer> receptions;
+	private ArrayList<Integer> memorisations;
+	private ArrayList<Integer> remplacements;
 	
 	public OccurrencesLemme(Lemme lemme) {
 		this.lemme = lemme;
 		
-		premiereEmission = -1;
-		derniereEmission = -1;
-		nombreEmissions = 0;
-		
-		premiereReception = -1;
-		derniereReception = -1;
-		nombreReceptions = 0;
-		
-		premiereMemorisation = -1;
-		derniereMemorisation = -1;
-		nombreMemorisations = 0;
+		emissions = new ArrayList<Integer>();
+		receptions = new ArrayList<Integer>();
+		memorisations = new ArrayList<Integer>();
+		remplacements = new ArrayList<Integer>();
 	}
+	
 	public Lemme lireLemme() {
 		return lemme;
 	}
 	
-	public int lirePremierEmission() {
-		return premiereEmission;
+	public void nouvelleEmission(int date) {
+		emissions.add(date);
 	}
 	
-	public int lireDerniereEmission() {
-		return derniereEmission;
+	public void nouvelleReception(int date) {
+		receptions.add(date);
 	}
 	
-	public int lireNombreEmissions() {
-		return nombreEmissions;
+	public void nouvelleMemorisation(int date) {
+		memorisations.add(date);
 	}
 	
-	public void nouvelleEmission(int dateOccurrence) {
-		if (premiereEmission == -1) {
-			premiereEmission = dateOccurrence;
-		}
-		derniereEmission = dateOccurrence;
-		nombreEmissions++;
-	}
-
-	public int lirePremierReception() {
-		return premiereReception;
+	public void nouveauRemplacement(int date) {
+		remplacements.add(date);
 	}
 	
-	public int lireDerniereReception() {
-		return derniereReception;
+	public int nombreEmissions() {
+		return emissions.size();
 	}
 	
-	public int lireNombreReceptions() {
-		return nombreReceptions;
+	public int nombreReceptions() {
+		return receptions.size();
 	}
 	
-	public void nouvelleReception(int dateOccurrence) {
-		if (premiereReception == -1) {
-			premiereReception = dateOccurrence;
-		}
-		derniereReception = dateOccurrence;
-		nombreReceptions++;
+	public int nombreMemorisations() {
+		return memorisations.size();
 	}
 	
-	public int lirePremierMemorisation() {
-		return premiereMemorisation;
+	public int nombreRemplacements() {
+		return remplacements.size();
 	}
 	
-	public int lireDerniereMemorisation() {
-		return derniereMemorisation;
-	}
-	
-	public int lireNombreMemorisations() {
-		return nombreMemorisations;
-	}
-	
-	public void nouvelleMemorisation(int dateOccurrence) {
-		if (premiereMemorisation == -1) {
-			premiereMemorisation = dateOccurrence;
-		}
-		derniereMemorisation = dateOccurrence;
-		nombreMemorisations++;
-	}
-	
-	@Override
 	public String toString() {
-		return "Occurrences " + lemme.toString() +
-			" : \tNE : " + nombreEmissions +
-			", \tPE : " + premiereEmission +
-			", \tDE : " + derniereEmission +
-			", \tNR : " + nombreReceptions +
-			", \tPR : " + premiereReception +
-			", \tDR : " + derniereReception +
-			", \tNM : " + nombreMemorisations +
-			", \tPM : " + premiereMemorisation +
-			", \tDM : " + derniereMemorisation +
-			"\n";
+		return lemme + " |"
+					 + " \tE :\t" + nombreEmissions()
+					 + ",\tR :\t" + nombreReceptions()
+					 + ",\tM :\t" + nombreMemorisations()
+					 + ",\tR :\t" + nombreRemplacements();
 	}
 }
