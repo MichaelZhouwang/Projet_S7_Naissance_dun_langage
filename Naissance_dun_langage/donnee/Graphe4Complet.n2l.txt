@@ -1,0 +1,13 @@
+NOM : Graphe4Complet
+COMMENTAIRE : 4 individu en graphe complet
+COMMENTAIRE : Non-oriente
+COMMENTAIRE : Matrice presente par sommet-sommet
+TYPE : n2l
+NOMBRESOMMET : 4
+ARC_POIDS_TYPE : Egal
+SOMMET_SOMMET_SECTION
+0 1 1 1
+1 0 1 1
+1 1 0 1
+1 1 1 0
+EOF

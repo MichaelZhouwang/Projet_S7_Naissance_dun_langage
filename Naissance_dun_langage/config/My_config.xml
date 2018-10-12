@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+ <properties>
+   <comment>algorithm is the class implementing your algorithm and instance
+   	is the datafile holding the instance to solve
+   </comment>
+   <!-- Permet d'utiliser plusieurs type d'individu-->
+   <!-- Individu Oriente / non-oriente -->
+   <entry key="individu">architecture.Individu</entry>
+   <!-- Configuration de reseaux -->
+   <entry key="graphe">./donnee/Example.n2l.txt</entry>
+</properties>
