@@ -5,37 +5,37 @@ import java.util.ArrayList;
 public class OccurrencesLemme {
 	private Lemme lemme;
 
-	private ArrayList<Integer> emissions;
-	private ArrayList<Integer> receptions;
-	private ArrayList<Integer> memorisations;
-	private ArrayList<Integer> remplacements;
+	private ArrayList<Date> emissions;
+	private ArrayList<Date> receptions;
+	private ArrayList<Date> memorisations;
+	private ArrayList<Date> remplacements;
 	
 	public OccurrencesLemme(Lemme lemme) {
 		this.lemme = lemme;
 		
-		emissions = new ArrayList<Integer>();
-		receptions = new ArrayList<Integer>();
-		memorisations = new ArrayList<Integer>();
-		remplacements = new ArrayList<Integer>();
+		emissions = new ArrayList<Date>();
+		receptions = new ArrayList<Date>();
+		memorisations = new ArrayList<Date>();
+		remplacements = new ArrayList<Date>();
 	}
 	
 	public Lemme lireLemme() {
 		return lemme;
 	}
 	
-	public void nouvelleEmission(int date) {
+	public void nouvelleEmission(Date date) {
 		emissions.add(date);
 	}
 	
-	public void nouvelleReception(int date) {
+	public void nouvelleReception(Date date) {
 		receptions.add(date);
 	}
 	
-	public void nouvelleMemorisation(int date) {
+	public void nouvelleMemorisation(Date date) {
 		memorisations.add(date);
 	}
 	
-	public void nouveauRemplacement(int date) {
+	public void nouveauRemplacement(Date date) {
 		remplacements.add(date);
 	}
 	

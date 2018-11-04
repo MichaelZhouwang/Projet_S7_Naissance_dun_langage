@@ -1,219 +1,132 @@
 package architecture;
 
 import java.util.ArrayList;
-import conditions.Condition;
-import evenements.Evenement;
+import java.util.HashMap;
+
+import condition.enums.CategorieConditionArret;
+import condition.enums.ImplementationCondition;
+import condition.enums.UtilisationCondition;
+import evenement.Evenemen;
+import strategie.enums.ImplementationStrategie;
+import strategie.enums.UtilisationStrategie;
 
 public class Systeme {
-	private Horloge horloge;
-	private Echeancier echeancier;
-	private ArrayList<Individu> individus;
+	private static ArrayList<Individu> individus = new ArrayList<Individu>();;
 	
-	private Condition conditionArret;
+	private static Echeancier echeancier = new Echeancier();
+	private static Horloge horloge = new Horloge();
+	private static CategorieConditionArret conditionArret;
 	
-	public Systeme() {
-		echeancier = new Echeancier();
-		horloge = new Horloge();
-		individus = new ArrayList<Individu>();
-		conditionArret = new ConditionArretDate();
+	public static Date lireDateHorloge() {
+		return horloge.lireDate();
+	}
+	
+	public static void ajouterPremierEvenementEnDate(Evenemen evenement, Date date) {
+		echeancier.ajouterPremierEvenementEnDate(evenement, date);
+	}
+	
+	public static void ajouterDernierEvenementEnDate(Evenemen evenement, Date date) {
+		echeancier.ajouterDernierEvenementEnDate(evenement, date);
+	}
+	
+	public static void declencherProchainEvenement() {
+		horloge.mettreAJourDate(echeancier.dateProchainEvenement());
+		echeancier.declencherProchainEvenement();
+	}
+	
+	public static CategorieConditionArret lireConditionArret() {
+		return conditionArret;
+	}
+	
+	public static EvenementInitial genererEvenementInitial() {
+		return new EvenementInitial(null);
+	}
+	
+	public static EvenementFinal genererEvenementFinal(Evenemen evenementInitiateur) {
+		return new EvenementFinal(evenementInitiateur);
 	}
 
-	public void generer() {
-		int nombreIndividus = 3;
+	private static void generer() {
+		int nombreIndividus = 4;
+		
+		HashMap<UtilisationCondition, ImplementationCondition> parametresConditions = new HashMap<UtilisationCondition, ImplementationCondition>();
+		
+		parametresConditions.put(UtilisationCondition.EMISSION, ImplementationCondition.TOUJOURS_VERIFIEE);
+		parametresConditions.put(UtilisationCondition.RECEPTION, ImplementationCondition.TOUJOURS_VERIFIEE);
+		parametresConditions.put(UtilisationCondition.MEMORISATION, ImplementationCondition.TOUJOURS_VERIFIEE);
+		
+		HashMap<UtilisationStrategie, ImplementationStrategie> parametresAlgorithmes = new HashMap<UtilisationStrategie, ImplementationStrategie>();
+		
+		parametresAlgorithmes.put(UtilisationStrategie.SELECTION_LEMME, ImplementationStrategie.SELECTION_PREMIER);
+		parametresAlgorithmes.put(UtilisationStrategie.ELIMINATION_LEMME, ImplementationStrategie.SELECTION_MOINS_EMIS);
+		parametresAlgorithmes.put(UtilisationStrategie.SUCCESSION, ImplementationStrategie.SUCCESSION_VOISIN_ALEATOIRE);
 		
 		for (int i = 0; i < nombreIndividus; i++) {
-			individus.add(new Individu());
+			individus.add(new Individu(5, 10));
 		}
 		
 		for (Individu individu : individus) {
-			try {
-				individu.genererLexique(5, 10);
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
-			
 			for (Individu voisin : individus) {
 				if (voisin != individu) {
 					individu.ajouterVoisin(voisin);
+					individu.ajouterDelaisVoisin(voisin, Delais.delaisReceptionParDéfaut);
 				}
 			}
+			
+			for (UtilisationCondition typeCondition : parametresConditions.keySet()) {
+				individu.definirCondition(typeCondition, parametresConditions.get(typeCondition));
+			}
+			for (UtilisationStrategie typeAlgorithme : parametresAlgorithmes.keySet()) {
+				individu.definirAlgorithme(typeAlgorithme, parametresAlgorithmes.get(typeAlgorithme));
+			}
 		}
+		
+		conditionArret = CategorieConditionArret.DEUXCENT_ITERATIONS;
 	}
 	
-	public void routine() {
-		while (!conditionArret.estSatisfaite()) {
-			for (Individu individu : individus) {
-				
-				horloge.avancerDate();	
-				
-				EvenementEmission evenement = new EvenementEmission(horloge.dateActuelle(), individu);
-				echeancier.ajouterEvenement(evenement);
-				
-				while (!echeancier.estVide() && !conditionArret.estSatisfaite()) {
-					echeancier.declencherDernierEvenement();
-				}
-				
-				if (conditionArret.estSatisfaite()) {
-					break;
-				}
-			}
-		}
+	public static void routine() {
+		generer();
 
-		for (Evenement evenement : echeancier.obtenirHistorique()) {
-			System.out.println(evenement);
-		}
-		System.out.println();
+		ajouterPremierEvenementEnDate(genererEvenementInitial(), horloge.lireDate());
+		declencherProchainEvenement();
+		
 		for (Individu individu : individus) {
 			System.out.println(individu);
 		}
 	}
 	
-	private class EvenementEmission extends Evenement {
-
-		public EvenementEmission(int dateEmission, Individu emetteur) {
-			super(dateEmission, emetteur);
-		}
-
-		public void genererDescriptionSucces(Lemme lemmeEnEmission) {
-			decrire("L'individu " + lireActeur().lireLettre()
-					+ " a émis le lemme " + lemmeEnEmission
-					+ " à la date " + lireDate());
-		}
+	// Évènement initial
 	
-		public void genererDescriptionEchec() {
-			decrire("L'individu " + lireActeur().lireLettre()
-					+ " n'a pas émis de lemme à la date "
-					+ lireDate());
-		}
-		
-		@Override
-		public void declencher() {
-			Individu emetteur = lireActeur();
-			int dateEmission = lireDate();
-			
-			if (emetteur.peutEmettre()) {		
-				Lemme lemmeEnEmission = emetteur.lireAlgorithmeSelection().determinerLemme();
-				
-				emetteur.ajouterOccurrenceLemmeEmis(dateEmission, lemmeEnEmission);
-				genererDescriptionSucces(lemmeEnEmission);
-				
-				for (Individu voisin : emetteur.lireVoisins()) {
-					EvenementReception evenement = new EvenementReception(horloge.dateActuelle(), voisin, lemmeEnEmission);
-					echeancier.ajouterEvenement(evenement);
-				}
-			}
-			else {
-				genererDescriptionEchec();
-			}
-		}
-	}
-	
-	private class EvenementReception extends Evenement {
-		private Lemme lemmeEnReception;
-		
-		public EvenementReception(int date, Individu recepteur, Lemme lemmeEnReception) {
-			super(date, recepteur);
-			this.lemmeEnReception = lemmeEnReception;
-		}
+	private static class EvenementInitial extends Evenemen {
 
-		public void genererDescriptionSucces(Lemme lemmeEnEmission) {
-			decrire("\tL'individu " + lireActeur().lireLettre()
-					+ " a reçu le lemme " + lemmeEnReception
-					+ " à la date " + lireDate());
-		}
-	
-		public void genererDescriptionEchec(Lemme lemmeEnEmission) {
-			decrire("\tL'individu " + lireActeur().lireLettre()
-					+ " n'a pas reçu le lemme " + lemmeEnReception
-					+ " à la date " + lireDate());
+		public EvenementInitial(Evenemen evenementInitiateur) {
+			super(evenementInitiateur);
 		}
 
 		@Override
 		public void declencher() {
-			Individu recepteur = lireActeur();
-			int dateReception = lireDate();
+			Individu individu = individus.get(0);
+			Lemme lemmeEnEmission = individu.lireAlgorithmeSelection().determinerLemme();
 			
-			if (recepteur.peutRecevoir()) {
-				recepteur.ajouterOccurrenceLemmeRecu(dateReception, lemmeEnReception);
-				genererDescriptionSucces(lemmeEnReception);
-				
-				EvenementMemorisation evenement = new EvenementMemorisation(horloge.dateActuelle(), recepteur, lemmeEnReception);
-				echeancier.ajouterEvenement(evenement);
-			}
-			else {
-				genererDescriptionEchec(lemmeEnReception);
-			}
+			ajouterPremierEvenementEnDate(
+				individu.genererEvenementEmission(this, lemmeEnEmission),
+				horloge.lireDate().plusDelais(Delais.delaisPassageParDéfaut)
+			);
+			
+			declencherProchainEvenement();
 		}
 	}
 	
-	private class EvenementMemorisation extends Evenement {
+	private static class EvenementFinal extends Evenemen {
 
-		private Lemme lemmeEnMemorisation;
-		
-		public EvenementMemorisation(int date, Individu recepteur, Lemme lemmeEnMemorisation) {
-			super(date, recepteur);
-			this.lemmeEnMemorisation = lemmeEnMemorisation;
-		}
-		
-		public void genererDescriptionSuccesAjout(Lemme lemmeEnMemorisation) {
-			decrire("\t\tL'individu "					 + lireActeur().lireLettre()
-				+ " a réussi à mémoriser le lemme "	 + lemmeEnMemorisation
-				+ " à la date "						 + lireDate());
-		}
-		
-		public void genererDescriptionSuccesRemplacement(Lemme lemmeEnMemorisation, Lemme lemmeRemplace) {
-			decrire("\t\tL'individu "					 + lireActeur().lireLettre()
-					+ " a réussi à mémoriser le lemme "	 + lemmeEnMemorisation
-					+ " à la place du lemme "			 + lemmeRemplace
-					+ " à la date "						 + lireDate());
-		}
-	
-		public void genererDescriptionEchec(Lemme lemmeEnMemorisation) {
-			decrire("\t\tL'individu "					 		+ lireActeur().lireLettre()
-					+ " n'a pas réussi à mémoriser le lemme "	+ lemmeEnMemorisation
-					+ " à la date "						 		+ lireDate());
+		public EvenementFinal(Evenemen evenementInitiateur) {
+			super(evenementInitiateur);
 		}
 
 		@Override
 		public void declencher() {
-			Individu recepteur = lireActeur();
-			
-			if (recepteur.peutMemoriser(lemmeEnMemorisation)) {
-				recepteur.ajouterOccurrenceLemmeMemorise(horloge.dateActuelle(), lemmeEnMemorisation);
-
-				ArrayList<Lemme> lexique = recepteur.lireLexique();
-				
-				if (lexique.indexOf(lemmeEnMemorisation) < 0) {
-					if (lexique.size() < recepteur.lireTailleMaximaleLexique()) {
-						lexique.add(lemmeEnMemorisation);
-						genererDescriptionSuccesAjout(lemmeEnMemorisation);
-					}
-					else {
-						Lemme lemmeEnRemplacement = recepteur.lireAlgorithmeElimination().determinerLemme();
-
-						if (lexique.remove(lemmeEnRemplacement)) {
-							lexique.add(lemmeEnMemorisation);
-							genererDescriptionSuccesRemplacement(lemmeEnMemorisation, lemmeEnRemplacement);
-						}
-					}
-				}
-				else {
-					genererDescriptionSuccesAjout(lemmeEnMemorisation);
-				}
-			}
-			else {
-				genererDescriptionEchec(lemmeEnMemorisation);
-			}
+			// Aucun prochain évènement n'est déclenché
 		}
-	}
-	
-	private class ConditionArretDate extends Condition {
 
-		@Override
-		public boolean estSatisfaite() {
-			return horloge.aDepasseDate(500);
-		}
-		
 	}
 }

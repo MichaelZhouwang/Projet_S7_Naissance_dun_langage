@@ -1,25 +1,21 @@
 package architecture;
 
 public class Horloge {
-	private int date;
+	private Date date;
 	
 	public Horloge() {
-		date = 0;
+		date = new Date(Date.valeurInitiale);
 	}
 	
-	public int dateNulle() {
-		return 0;
-	}
-	
-	public int dateActuelle() {
+	public Date lireDate() {
 		return date;
 	}
 	
-	public void avancerDate() {
-		date++;
+	public void mettreAJourDate(Date date) {
+		this.date = date;
 	}
 	
-	public boolean aDepasseDate(int date) {
-		return this.date > date; 
+	public boolean aDepasseDate(Date date) {
+		return this.date.lireValeur() > date.lireValeur(); 
 	}
 }
