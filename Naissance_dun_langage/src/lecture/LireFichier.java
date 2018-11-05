@@ -61,6 +61,7 @@ public class LireFichier {
 
 		String nomTete;
 		String valeurTete;
+		String nomGraphe = "";
 		String[] articles;
 
 		try {
@@ -71,6 +72,9 @@ public class LireFichier {
 					articles = line.split(":");
 					nomTete = articles[0].trim().toUpperCase();
 					valeurTete = articles.length > 1 ? articles[1].trim() : "";
+					if (nomTete.equals("NOM")) {
+						nomGraphe = valeurTete;
+					}
 					if (nomTete.equals("NOMBRESOMMET")) {
 						nbrSommet = Integer.parseInt(valeurTete);
 						matSomSom = new double[nbrSommet][nbrSommet];
@@ -122,7 +126,7 @@ public class LireFichier {
 		}
 
 		// charger la classe Graphe
-		Graphe graphe = new Graphe(matSomSom, matLex);
+		Graphe graphe = new Graphe(nomGraphe, matSomSom, matLex);
 
 		return graphe;
 

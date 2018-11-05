@@ -8,5 +8,5 @@
    <!-- Individu Oriente / non-oriente -->
    <entry key="individu">architecture.Individu</entry>
    <!-- Configuration de reseaux -->
-   <entry key="graphe">./donnee/Example.n2l.txt</entry>
+   <entry key="graphe">./donnee/Graphe4Complet.n2l.txt</entry>
 </properties>

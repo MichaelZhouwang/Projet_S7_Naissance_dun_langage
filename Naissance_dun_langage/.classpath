@@ -3,5 +3,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="lib" path="/home/does/Document/Naissance2Language/VersionBase/Naissance_dun_langage/lib/gs-algo-1.3-SNAPSHOT-last.jar"/>
+	<classpathentry kind="lib" path="/home/does/Document/Naissance2Language/VersionBase/Naissance_dun_langage/lib/gs-core-1.3-SNAPSHOT-last.jar"/>
+	<classpathentry kind="lib" path="/home/does/Document/Naissance2Language/VersionBase/Naissance_dun_langage/lib/gs-ui-1.3-SNAPSHOT-last.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
