@@ -1,4 +1,4 @@
-import architecture.Systeme;
+import systeme.Systeme;
 
 public class Main {
 

@@ -1,6 +1,6 @@
 package condition;
 
-import architecture.Lemme;
+import lexique.Lemme;
 
 public abstract class ConditionDependante {
 	public abstract boolean estSatisfaite(Lemme lemme);

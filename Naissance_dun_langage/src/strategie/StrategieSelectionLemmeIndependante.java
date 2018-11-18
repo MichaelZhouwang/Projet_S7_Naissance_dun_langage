@@ -1,6 +1,6 @@
 package strategie;
 
-import architecture.Lemme;
+import lexique.Lemme;
 
 public abstract class StrategieSelectionLemmeIndependante extends StrategieSelectionLemmeDependante {
 	public abstract Lemme determinerLemme();

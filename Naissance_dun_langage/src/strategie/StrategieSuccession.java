@@ -1,6 +1,6 @@
 package strategie;
 
-import architecture.Individu;
+import systeme.Individu;
 
 public abstract class StrategieSuccession {
 	
