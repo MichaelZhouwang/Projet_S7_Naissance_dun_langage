@@ -2,18 +2,11 @@ NOM : Example
 COMMENTAIRE : 4 individu par un cycle
 COMMENTAIRE : Non-oriente
 COMMENTAIRE : Matrice presente par sommet-sommet
-COMMENTAIRE : int tailleInitialeLexique, int tailleMaximaleLexique
 TYPE : n2l
 NOMBRESOMMET : 4
-ARC_POIDS_TYPE : Egal
 SOMMET_SOMMET_SECTION
 0 1 0 1
 1 0 1 0
 0 1 0 1
 1 0 1 0
-LEXIQUE_SECTION
-5 10
-5 10
-5 10
-5 10
 EOF

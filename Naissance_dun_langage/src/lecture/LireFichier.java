@@ -4,14 +4,18 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Properties;
 
-import architecture.Graphe;
-import architecture.Individu;
+import condition.enums.CategorieConditionArret;
+import condition.enums.ImplementationCondition;
+import strategie.enums.ImplementationStrategie;
+import systeme.SystemeIntermediaire;
 
 public class LireFichier {
 
 	private Properties systemeConfig;
+	private int tailleInitialeLexique, tailleMaximaleLexique;
 
 	public LireFichier(String sXmlName) {
 
@@ -28,44 +32,28 @@ public class LireFichier {
 		}
 
 	}
-
-	public Individu LireIndividu() {
-
-		System.out.println("Lecture Individu");
-
-		// charger dynamiquement la classe Individu
-		Individu individu = null;
-
-		try {
-			Class<?> c = Class.forName(systemeConfig.getProperty("individu"));
-			individu = (Individu) c.newInstance();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
-
-		return individu;
-	}
-
-	@SuppressWarnings("resource")
-	public Graphe LireGraphe() throws Exception {
+	
+	public SystemeIntermediaire LireSyeteme() throws Exception {
 
 		System.out.println("Lecture Graphe");
 
-		String numFichier = systemeConfig.getProperty("graphe");
+		String numFichier = systemeConfig.getProperty("Graphe");
+		int tailleInitialeLexique, tailleMaximaleLexique;
+		tailleInitialeLexique = Integer.parseInt(systemeConfig.getProperty("TailleInitialeLexique"));
+		tailleMaximaleLexique = Integer.parseInt(systemeConfig.getProperty("TailleMaximaleLexique"));
+		
 		boolean lireTete = true;
 		boolean lireCoordonnees = false;
-		boolean lireLexique = false;
 		int curSommet = 0, nbrSommet = 0;
 		double[][] matSomSom = null;
-		int[][] matLex = null;
 
 		String nomTete;
 		String valeurTete;
-		String nomGraphe = "";
+		String nomSysteme = "";
 		String[] articles;
 
+		BufferedReader reader = new BufferedReader(new FileReader(numFichier));
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(numFichier));
 			String line = reader.readLine().trim();
 			while (!line.isEmpty() && !line.equals("EOF")) {
 				if (lireTete) {
@@ -73,18 +61,17 @@ public class LireFichier {
 					nomTete = articles[0].trim().toUpperCase();
 					valeurTete = articles.length > 1 ? articles[1].trim() : "";
 					if (nomTete.equals("NOM")) {
-						nomGraphe = valeurTete;
+						nomSysteme = valeurTete;
 					}
 					if (nomTete.equals("NOMBRESOMMET")) {
 						nbrSommet = Integer.parseInt(valeurTete);
 						matSomSom = new double[nbrSommet][nbrSommet];
-						matLex = new int[nbrSommet][2];
 					}
 					if (nomTete.equals("SOMMET_SOMMET_SECTION")) {
 						lireTete = false;
 						lireCoordonnees = true;
 					}
-				} else if (lireCoordonnees && curSommet < nbrSommet && !lireLexique) {
+				} else if (lireCoordonnees && curSommet < nbrSommet) {
 					if (matSomSom == null) {
 						throw new IllegalArgumentException("Vous devez ecrire le nombre de sommets");
 					}
@@ -96,40 +83,65 @@ public class LireFichier {
 						matSomSom[curSommet][i] = Double.parseDouble(articles[i]);
 					}
 					curSommet++;
-				} else if (curSommet == nbrSommet) {
-					articles = line.split(":");
-					nomTete = articles[0].trim().toUpperCase();
-					valeurTete = articles.length > 1 ? articles[1].trim() : "";
-					if (nomTete.equals("LEXIQUE_SECTION")) {
-						lireCoordonnees = false;
-						lireLexique = true;
-					}
-					curSommet = 0;
-				} else if (lireLexique && curSommet < nbrSommet) {
-					if (matLex == null) {
-						throw new IllegalArgumentException("Vous devez ecrire le nombre de sommets");
-					}
-					articles = line.split("(\\s)+");
-					if (articles.length != 2) {
-						throw new IllegalArgumentException(
-								"Le nombre de lexique infos sur la matrice n'est pas correct");
-					}
-					for (int i = 0; i < 2; i++) {
-						matLex[curSommet][i] = Integer.parseInt(articles[i]);
-					}
-					curSommet++;
 				}
 				line = reader.readLine().trim();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			reader.close();
 		}
 
-		// charger la classe Graphe
-		Graphe graphe = new Graphe(nomGraphe, matSomSom, matLex);
+		// charger la classe systemeIntermediaire
+		SystemeIntermediaire systemeIntermediaire = new SystemeIntermediaire(nomSysteme, matSomSom, tailleInitialeLexique, tailleMaximaleLexique);
 
-		return graphe;
+		return systemeIntermediaire;
 
 	}
 
+	public HashMap<String, ImplementationCondition> LireUtilisationConditions() {
+		
+		HashMap<String, ImplementationCondition> paramUtilisation = new HashMap<String, ImplementationCondition> ();
+		
+		String paramEMISSION = systemeConfig.getProperty("EMISSION");
+		String paramRECEPTION = systemeConfig.getProperty("RECEPTION");
+		String paramMEMORISATION = systemeConfig.getProperty("MEMORISATION");
+
+		paramUtilisation.put("EMISSION", ImplementationCondition.valueOf(paramEMISSION));
+		paramUtilisation.put("RECEPTION", ImplementationCondition.valueOf(paramRECEPTION));
+		paramUtilisation.put("MEMORISATION", ImplementationCondition.valueOf(paramMEMORISATION));
+		
+		return paramUtilisation;
+		
+	}
+
+	public HashMap<String, ImplementationStrategie> LireStrategies() {
+		
+		HashMap<String, ImplementationStrategie> paramStrategies = new HashMap<String, ImplementationStrategie> ();
+		
+		String paramSELECTION_LEMME = systemeConfig.getProperty("SELECTION_LEMME");
+		String paramELIMINATION_LEMME = systemeConfig.getProperty("ELIMINATION_LEMME");
+		String paramSUCCESSION = systemeConfig.getProperty("SUCCESSION");
+
+		paramStrategies.put("SELECTION_LEMME", ImplementationStrategie.valueOf(paramSELECTION_LEMME));
+		paramStrategies.put("ELIMINATION_LEMME", ImplementationStrategie.valueOf(paramELIMINATION_LEMME));
+		paramStrategies.put("SUCCESSION", ImplementationStrategie.valueOf(paramSUCCESSION));
+		
+		return paramStrategies;
+		
+	}
+
+	public HashMap<String, CategorieConditionArret> LireArretConditions() {
+		
+		HashMap<String, CategorieConditionArret> paramArret = new HashMap<String, CategorieConditionArret> ();
+		
+		String paramArretCondition = systemeConfig.getProperty("ArretCondition");
+		
+		paramArret.put("ArretCondition", CategorieConditionArret.valueOf(paramArretCondition));
+
+
+		return paramArret;
+		
+	}
+	
 }

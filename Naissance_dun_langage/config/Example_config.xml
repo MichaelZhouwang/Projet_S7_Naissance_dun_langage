@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
  <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
- <properties>
-   <comment>algorithm is the class implementing your algorithm and instance
-   	is the datafile holding the instance to solve
-   </comment>
-   <!-- Nbr d'ob-->
-   <entry key="algorithm">polytech.tours.di.parallel.tsp.example.ExampleAlgorithm</entry>
-   <!-- Temps - sec -->
-   <entry key="maxcpu">10</entry>
-   <entry key="instance">./data/wi29.tsp.txt</entry>
-   <!-- Nbr-->
-   <entry key="seed">123456</entry>
+<properties>
+	<comment>Configuration par default pour le systeme</comment>
+	<entry key="Graphe">./donnee/Example.n2l.txt<!--Matrice de reseau --></entry>
+	<entry key="TailleInitialeLexique">8</entry>
+	<entry key="TailleMaximaleLexique">5</entry>
+	<entry key="EMISSION">TOUJOURS_VERIFIEE<!--UtilisationConditions --></entry>
+	<entry key="RECEPTION">TOUJOURS_VERIFIEE<!--UtilisationConditions --></entry>
+	<entry key="MEMORISATION">TOUJOURS_VERIFIEE<!--UtilisationConditions --></entry>
+	<entry key="SELECTION_LEMME">SELECTION_UNIFORME<!--UtilisationStrategie --></entry>
+	<entry key="ELIMINATION_LEMME">SELECTION_MOINS_EMIS<!--UtilisationStrategie --></entry>
+	<entry key="SUCCESSION">SUCCESSION_VOISIN_ALEATOIRE<!--UtilisationStrategie --></entry>
+	<entry key="ArretCondition">LEXIQUE_PLEIN<!--ArretCondition --></entry>
 </properties>
