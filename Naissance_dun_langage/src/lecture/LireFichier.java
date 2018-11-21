@@ -38,14 +38,13 @@ public class LireFichier {
 		System.out.println("Lecture Graphe");
 
 		String numFichier = systemeConfig.getProperty("Graphe");
-		int tailleInitialeLexique, tailleMaximaleLexique;
 		tailleInitialeLexique = Integer.parseInt(systemeConfig.getProperty("TailleInitialeLexique"));
 		tailleMaximaleLexique = Integer.parseInt(systemeConfig.getProperty("TailleMaximaleLexique"));
 		
 		boolean lireTete = true;
 		boolean lireCoordonnees = false;
 		int curSommet = 0, nbrSommet = 0;
-		double[][] matSomSom = null;
+		int[][] matSomSom = null;
 
 		String nomTete;
 		String valeurTete;
@@ -65,7 +64,7 @@ public class LireFichier {
 					}
 					if (nomTete.equals("NOMBRESOMMET")) {
 						nbrSommet = Integer.parseInt(valeurTete);
-						matSomSom = new double[nbrSommet][nbrSommet];
+						matSomSom = new int[nbrSommet][nbrSommet];
 					}
 					if (nomTete.equals("SOMMET_SOMMET_SECTION")) {
 						lireTete = false;
@@ -80,7 +79,7 @@ public class LireFichier {
 						throw new IllegalArgumentException("Le nombre de sommets sur la matrice n'est pas correct");
 					}
 					for (int i = 0; i < nbrSommet; i++) {
-						matSomSom[curSommet][i] = Double.parseDouble(articles[i]);
+						matSomSom[curSommet][i] = Integer.parseInt(articles[i]);
 					}
 					curSommet++;
 				}

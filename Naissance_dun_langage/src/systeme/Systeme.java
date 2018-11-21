@@ -89,7 +89,7 @@ public class Systeme {
 		}
 	}
 
-	private static void generer() {
+	public static void generer() {
 		int nombreIndividus = 4;
 
 		HashMap<UtilisationCondition, ImplementationCondition> parametresConditions = new HashMap<UtilisationCondition, ImplementationCondition>();

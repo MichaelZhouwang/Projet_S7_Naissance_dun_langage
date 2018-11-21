@@ -13,9 +13,9 @@ public class SystemeIntermediaire {
 	
 	private ArrayList<Individu> individus;
 	private String nomSysteme;
-	private double[][] matSomSom;
+	private int[][] matSomSom;
 
-	public SystemeIntermediaire(String nomSysteme, double[][] matSomSom, int tailleInitialeLexique, int tailleMaximaleLexique) throws Exception {
+	public SystemeIntermediaire(String nomSysteme, int[][] matSomSom, int tailleInitialeLexique, int tailleMaximaleLexique) throws Exception {
 		
 		this.nomSysteme = nomSysteme;
 		this.matSomSom = matSomSom;		
@@ -34,7 +34,12 @@ public class SystemeIntermediaire {
 			for (int numVoisin = 0; numVoisin < matSomSom.length; numVoisin++) {
 				if (matSomSom[numIndividu][numVoisin] != 0) {
 					individus.get(numIndividu).ajouterVoisin(individus.get(numVoisin));
-					individus.get(numIndividu).ajouterDelaisVoisin(individus.get(numVoisin), Delais.delaisReceptionParDefaut);
+					
+					if (matSomSom[numIndividu][numVoisin] == 1) {
+						individus.get(numIndividu).ajouterDelaisVoisin(individus.get(numVoisin), Delais.delaisReceptionParDefaut);
+					} else {
+						individus.get(numIndividu).ajouterDelaisVoisin(individus.get(numVoisin), new Delais(matSomSom[numIndividu][numVoisin]));
+					}
 				}
 			}
 
