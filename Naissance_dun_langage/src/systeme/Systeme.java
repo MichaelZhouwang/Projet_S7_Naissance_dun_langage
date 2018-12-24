@@ -1,34 +1,102 @@
 package systeme;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
-import condition.enums.CategorieConditionArret;
-import condition.enums.ImplementationCondition;
-import condition.enums.UtilisationCondition;
-import evenement.Evenement;
+import condition.enumeration.ImplementationCondition;
+import evenement.enumeration.IssueEvenement;
+import evenement.enumeration.TypeEvenement;
+import evenement.modele.Evenement;
 import lexique.Lemme;
 import lexique.OccurrenceLemme;
-import strategie.enums.ImplementationStrategie;
-import strategie.enums.UtilisationStrategie;
+import lexique.ComparateurOccurrenceLemmeDate;
+import strategie.enumeration.ImplementationStrategieSelection;
+import strategie.enumeration.ImplementationStrategieSuccession;
+import systeme.enumeration.TypeCritereArret;
+import systeme.executeur.ExecuteurEvenementsSysteme;
 import temps.Date;
 import temps.Delais;
 import temps.Horloge;
 
 public class Systeme {
-	private static ArrayList<Individu> individus = new ArrayList<Individu>();
+	private static ExecuteurEvenementsSysteme executeurEvenements = new ExecuteurEvenementsSysteme();
 	
+	private static int nombreIndividus;
+	
+	private static int tailleInitialeLexiqueParDefaut;
+	private static int tailleMaximaleLexiqueParDefaut;
+	
+	private static ImplementationCondition implementationConditionEmissionParDefaut = null;
+	private static ImplementationCondition implementationConditionReceptionParDefaut = null;
+	private static ImplementationCondition implementationConditionMemorisationParDefaut = null;
+	
+	private static ImplementationStrategieSelection implementationStrategieSelectionEmissionParDefaut = null;
+	private static ImplementationStrategieSelection implementationStrategieSelectionEliminationParDefaut = null;
+	private static ImplementationStrategieSuccession implementationStrategieSuccessionParDefaut = null;
+	
+	private static CritereArret critereArret;
+	
+	private static ArrayList<Individu> individus = new ArrayList<Individu>();
 	private static Echeancier echeancier = new Echeancier();
 	private static Horloge horloge = new Horloge();
-	
 	private static HashMap<Integer, Lemme> cacheLemmes = new HashMap<Integer, Lemme>();
+	private static HashMap<Integer, OccurrenceLemme> cacheOccurrencesLemmes = new HashMap<Integer, OccurrenceLemme>();
 	
-	private static CategorieConditionArret conditionArret;
+	private static boolean estArrete = false;
+	
+	public static int lireTailleInitialeLexiqueParDefaut() {
+		return tailleInitialeLexiqueParDefaut;
+	}
+	
+	public static int lireTailleMaximaleLexiqueParDefaut() {
+		return tailleMaximaleLexiqueParDefaut;
+	}
+	
+	public static int lireNombreIndividus() {
+		return nombreIndividus;
+	}
+	
+	public static ImplementationCondition lireImplementationConditionEmissionParDefaut() {
+		return implementationConditionEmissionParDefaut;
+	}
+	
+	public static ImplementationCondition lireImplementationConditionReceptionParDefaut() {
+		return implementationConditionReceptionParDefaut;
+	}
+	
+	public static ImplementationCondition lireImplementationConditionMemorisationParDefaut() {
+		return implementationConditionMemorisationParDefaut;
+	}
+	
+	public static ImplementationStrategieSelection lireImplementationStrategieSelectionEmissionParDefaut() {
+		return implementationStrategieSelectionEmissionParDefaut;
+	}
+	
+	public static ImplementationStrategieSelection lireImplementationStrategieSelectionEliminationParDefaut() {
+		return implementationStrategieSelectionEliminationParDefaut;
+	}
+	
+	public static ImplementationStrategieSuccession lireImplementationStrategieSuccessionParDefaut() {
+		return implementationStrategieSuccessionParDefaut;
+	}
+	
+	public static TypeCritereArret lireTypeCritereArret() {
+		return critereArret.lireTypeCritere();
+	}
+	
+	public static int lireObjectifCritereArret() {
+		return critereArret.lireObjectif();
+	}
+	
+	public static ArrayList<Individu> obtenirIndividus() {
+		return individus;
+	}
 	
 	public static Date lireDateHorloge() {
 		return horloge.lireDate();
 	}
-	
+
 	public static void ajouterPremierEvenementEnDate(Evenement evenement, Date date) {
 		echeancier.ajouterPremierEvenementEnDate(evenement, date);
 	}
@@ -38,148 +106,89 @@ public class Systeme {
 	}
 	
 	public static void declencherProchainEvenement() {
-		horloge.mettreAJourDate(echeancier.dateProchainEvenement());
-		echeancier.declencherProchainEvenement();
+		if (!estArrete) {
+			horloge.mettreAJourDate(echeancier.dateProchainEvenement());
+			echeancier.declencherProchainEvenement();
+		}
+	}
+
+	public static void declencherEvenementFinal(Evenement evenementInitiateur) {
+		estArrete = true;
+		executeurEvenements.genererEvenementFinal(evenementInitiateur).declencher();
 	}
 	
-	public static Lemme consommerLemmeCacheEvenement(int idEvenement) {
-		return cacheLemmes.remove(idEvenement);
+	public static Lemme consommerLemmeCache(int IDEvenement) {
+		return cacheLemmes.remove(IDEvenement);
 	}
 	
-	public static void ajouterLemmeCacheEvenement(int idEvenement, Lemme lemme) {
-		cacheLemmes.put(idEvenement, lemme);
+	public static void ajouterLemmeCache(int IDEvenement, Lemme lemme) {
+		cacheLemmes.put(IDEvenement, lemme);
 	}
 	
-	public static CategorieConditionArret lireConditionArret() {
-		return conditionArret;
+	public static OccurrenceLemme consommerOccurrenceCache(int IDEvenement) {
+		return cacheOccurrencesLemmes.remove(IDEvenement);
 	}
 	
-	public static EvenementInitial genererEvenementInitial() {
-		return new EvenementInitial(null);
+	public static void ajouterOccurrenceCache(int IDEvenement, OccurrenceLemme occurrence) {
+		cacheOccurrencesLemmes.put(IDEvenement, occurrence);
 	}
 	
-	public static EvenementFinal genererEvenementFinal(Evenement evenementInitiateur) {
-		return new EvenementFinal(evenementInitiateur);
-	}
+	// Génération d'évènement
 	
-	public static void afficherBilanOccurrences() {
-		ArrayList<OccurrenceLemme> occurrencesLemmes = new ArrayList<OccurrenceLemme>();
-		
-		for (int indice = 0; indice < OccurrenceLemme.lireCompteur(); indice++) {
-			occurrencesLemmes.add(null);
+	public static void afficherBilan() {
+		ArrayList<OccurrenceLemme> listeOccurrences = new ArrayList<OccurrenceLemme>();
+
+		for (Individu individu : individus) {
+			listeOccurrences.addAll(individu.obtenirTableOccurrencesLemmes().obtenirListeOccurrencesLemmes(Lemme.QUELCONQUE, TypeEvenement.QUELCONQUE, IssueEvenement.QUELCONQUE));
 		}
 		
-		for (Individu _individu : individus) {
-			for (ArrayList<OccurrenceLemme> _occurrencesLemmes : _individu.lireTableOccurrencesLemmes().values()) {
-				for (OccurrenceLemme _occurrenceLemme : _occurrencesLemmes) {
-					occurrencesLemmes.remove(_occurrenceLemme.lireID() - 1);
-					occurrencesLemmes.add(_occurrenceLemme.lireID() - 1, _occurrenceLemme);
-				}
-			}
-		}
-		
-		for (OccurrenceLemme _occurrenceLemme : occurrencesLemmes) {
-			if (_occurrenceLemme != null) {
-				System.out.println(
-					_occurrenceLemme.lireTypeEvenement() + " ("
-					+ _occurrenceLemme.lireIssueEvenement() + ") du lemme "
-					+ _occurrenceLemme.lireLemme() + " par l'individu "
-					+ _occurrenceLemme.lireIndividu().lireLettre() + " à la date "
-					+ _occurrenceLemme.lireDate() + " [ev. "
-					+ _occurrenceLemme.lireID() + "]"
-				);
-			}
+		Collections.sort(listeOccurrences, new ComparateurOccurrenceLemmeDate());
+
+		for (OccurrenceLemme _occurrenceLemme : listeOccurrences) {
+			System.out.println(_occurrenceLemme);
 		}
 	}
 
 	private static void generer() {
-		int nombreIndividus = 4;
+		// Il faut récupérer les informations du système de la lecture du fichier XML
+		nombreIndividus = 8;
 		
-		HashMap<UtilisationCondition, ImplementationCondition> parametresConditions = new HashMap<UtilisationCondition, ImplementationCondition>();
+		tailleInitialeLexiqueParDefaut = 5;
+		tailleMaximaleLexiqueParDefaut = 10;
 		
-		parametresConditions.put(UtilisationCondition.EMISSION, ImplementationCondition.TOUJOURS_VERIFIEE);
-		parametresConditions.put(UtilisationCondition.RECEPTION, ImplementationCondition.TOUJOURS_VERIFIEE);
-		parametresConditions.put(UtilisationCondition.MEMORISATION, ImplementationCondition.TOUJOURS_VERIFIEE);
+		implementationStrategieSelectionEmissionParDefaut = ImplementationStrategieSelection.SELECTION_ALEATOIRE;
+		implementationStrategieSelectionEliminationParDefaut = ImplementationStrategieSelection.SELECTION_MOINS_EMIS;
+		implementationStrategieSuccessionParDefaut = ImplementationStrategieSuccession.SUCCESSION_VOISIN_ALEATOIRE;
 		
-		HashMap<UtilisationStrategie, ImplementationStrategie> parametresStrategies = new HashMap<UtilisationStrategie, ImplementationStrategie>();
+		implementationConditionEmissionParDefaut = ImplementationCondition.CONDITION_TOUJOURS_VERIFIEE;
+		implementationConditionReceptionParDefaut = ImplementationCondition.CONDITION_TOUJOURS_VERIFIEE;
+		implementationConditionMemorisationParDefaut = ImplementationCondition.CONDITION_PROBABILITE_UNIFORME;
 		
-		parametresStrategies.put(UtilisationStrategie.SELECTION_LEMME, ImplementationStrategie.SELECTION_UNIFORME);
-		parametresStrategies.put(UtilisationStrategie.ELIMINATION_LEMME, ImplementationStrategie.SELECTION_MOINS_EMIS);
-		parametresStrategies.put(UtilisationStrategie.SUCCESSION, ImplementationStrategie.SUCCESSION_VOISIN_ALEATOIRE);
-		
+		// On créé les individus
 		for (int i = 0; i < nombreIndividus; i++) {
-			individus.add(new Individu(8, 5));
+			Individu individu = new Individu();
+			individu.obtenirLexique().generer(tailleMaximaleLexiqueParDefaut, tailleInitialeLexiqueParDefaut, individu);
+			System.out.println(individu.obtenirLexique());
+			individus.add(individu);
 		}
 		
 		for (Individu individu : individus) {
+			// Ici on gère les cas particuliers pour chaque individus et on ajoute les voisins
 			for (Individu voisin : individus) {
-				if (voisin != individu) {
-					individu.ajouterVoisin(voisin);
-					individu.ajouterDelaisVoisin(voisin, Delais.delaisReceptionParDéfaut);
+				if (!voisin.equals(individu)) {
+					individu.ajouterVoisin(new Voisin(voisin, Delais.delaisReceptionParDéfaut));
 				}
-			}
-			
-			for (UtilisationCondition typeCondition : parametresConditions.keySet()) {
-				individu.definirCondition(typeCondition, parametresConditions.get(typeCondition));
-			}
-			for (UtilisationStrategie typeStrategie : parametresStrategies.keySet()) {
-				individu.definirStrategie(typeStrategie, parametresStrategies.get(typeStrategie));
 			}
 		}
 		
-		conditionArret = CategorieConditionArret.LEXIQUE_PLEIN;
+		critereArret = new CritereArret(TypeCritereArret.DATE, 20);
 	}
 	
 	public static void routine() {
 		generer();
 
-		ajouterPremierEvenementEnDate(genererEvenementInitial(), horloge.lireDate());
-		declencherProchainEvenement();
-		
-		for (Individu individu : individus) {
-			System.out.println(individu);
-		}
-		
-		afficherBilanOccurrences();
-	}
-	
-	// Évènement initial
-	
-	private static class EvenementInitial extends Evenement {
+		executeurEvenements.genererEvenementInitial().declencher();
 
-		public EvenementInitial(Evenement evenementInitiateur) {
-			super(evenementInitiateur);
-		}
-
-		@Override
-		public void declencher() {
-			Individu individu = individus.get(0);
-			
-			Lemme lemmeEnEmission = individu.lireStrategieSelection().determinerLemme();
-			Evenement evenementEmission = individu.genererEvenementEmission(this);
-			
-			ajouterLemmeCacheEvenement(evenementEmission.lireID(), lemmeEnEmission);
-			
-			ajouterPremierEvenementEnDate(
-				evenementEmission,
-				horloge.lireDate().plusDelais(Delais.delaisPassageParDéfaut)
-			);
-			
-			declencherProchainEvenement();
-		}
-	}
-	
-	private static class EvenementFinal extends Evenement {
-
-		public EvenementFinal(Evenement evenementInitiateur) {
-			super(evenementInitiateur);
-		}
-
-		@Override
-		public void declencher() {
-			System.out.println("Fin de la simulation : " + conditionArret);
-			// Aucun prochain évènement n'est déclenché
-		}
-
+		afficherBilan();
 	}
 }

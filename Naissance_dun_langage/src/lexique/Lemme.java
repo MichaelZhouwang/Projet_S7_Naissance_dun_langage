@@ -8,7 +8,10 @@ public class Lemme {
 	
 	public Lemme(Individu initiateur, String chaine) {
 		this.chaine = new String(chaine);
+		this.initiateur = initiateur;
 	}
+	
+	public static final Lemme QUELCONQUE = new Lemme(null, "");
 	
 	public String lireChaine() {
 		return chaine;

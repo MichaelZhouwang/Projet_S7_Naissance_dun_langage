@@ -4,13 +4,13 @@ public class Horloge {
 	private Date date;
 	
 	public Horloge() {
-		date = new Date(Date.valeurInitiale);
+		date = Date.valeurInitiale;
 	}
 	
 	public Date lireDate() {
 		return date;
 	}
-	
+
 	public void mettreAJourDate(Date date) {
 		this.date = date;
 	}
