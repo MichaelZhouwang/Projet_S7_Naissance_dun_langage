@@ -20,7 +20,7 @@ public class PorteeSysteme extends Portee {
 
 	@Override
 	public String toString() {
-		return "Système";
+		return "Systeme";
 	}
 
 	@Override
