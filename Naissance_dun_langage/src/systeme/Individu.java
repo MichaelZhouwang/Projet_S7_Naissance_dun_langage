@@ -6,6 +6,7 @@ import condition.enumeration.ImplementationCondition;
 import evenement.enumeration.IssueEvenement;
 import evenement.enumeration.TypeEvenement;
 import ihm.Constantes;
+
 import lexique.Lemme;
 import lexique.Lexique;
 import lexique.OccurrenceLemme;
@@ -13,10 +14,12 @@ import lexique.TableOccurrencesLemmes;
 import strategie.enumeration.ImplementationStrategieSelection;
 import strategie.enumeration.ImplementationStrategieSuccession;
 import systeme.executeur.ExecuteurEvenementsIndividu;
+
 import temps.Date;
 import temps.Delais;
 
 public class Individu {
+
 	public int getID() {
 		return ID;
 	}
@@ -199,6 +202,7 @@ public class Individu {
 	public void memoriserLemme(Lemme lemme) {
 		lexique.add(lemme);
 	}
+
 
 	public void remplacerLemme(Lemme lemmeARemplacer, Lemme nouveauLemme) {
 		if (lexique.remove(lemmeARemplacer)) {

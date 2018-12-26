@@ -18,8 +18,8 @@
 	</systeme>
 
 	<individu id="1">
-		<TailleInitialeLexique>5</TailleInitialeLexique>
-		<TailleMaximaleLexique>10</TailleMaximaleLexique>
+		<TailleInitialeLexique>50</TailleInitialeLexique>
+		<TailleMaximaleLexique>100</TailleMaximaleLexique>
 		<EMISSION>CONDITION_TOUJOURS_VERIFIEE</EMISSION>
 		<RECEPTION>CONDITION_TOUJOURS_VERIFIEE</RECEPTION>
 		<MEMORISATION>CONDITION_PROBABILITE_UNIFORME</MEMORISATION>

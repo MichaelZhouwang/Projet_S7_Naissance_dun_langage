@@ -16,11 +16,13 @@ import strategie.enumeration.ImplementationStrategieSelection;
 import strategie.enumeration.ImplementationStrategieSuccession;
 import systeme.enumeration.TypeCritereArret;
 import systeme.executeur.ExecuteurEvenementsSysteme;
+
 import temps.Date;
 import temps.Delais;
 import temps.Horloge;
 
 public class Systeme {
+
 	private static ExecuteurEvenementsSysteme executeurEvenements = new ExecuteurEvenementsSysteme();
 
 	private static int nombreIndividus;

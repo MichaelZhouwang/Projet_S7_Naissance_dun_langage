@@ -6,6 +6,7 @@ import systeme.Individu;
 import temps.Date;
 
 public class OccurrenceLemme {
+
 	private int ID;
 	private OccurrenceLemme occurrenceInitiatrice;
 	private Individu individu;
@@ -53,10 +54,12 @@ public class OccurrenceLemme {
 		return string;
 	}
 
+
 	public int lireID() {
 		return ID;
 	}
 	
+
 	public OccurrenceLemme lireOccurrenceInitiatrice() {
 		return occurrenceInitiatrice;
 	}
@@ -138,4 +141,5 @@ public class OccurrenceLemme {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+
 }

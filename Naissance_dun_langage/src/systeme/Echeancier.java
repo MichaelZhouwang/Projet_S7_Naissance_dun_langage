@@ -56,7 +56,7 @@ public class Echeancier extends TreeMap<Date, ArrayList<Evenement>>  {
 			
 			if (evenement != null) {
 				
-				// On retire l'évènement avant de le déclencher
+				// On retire l'evenement avant de le declencher
 				listeEvenements.remove(evenement);
 				if (listeEvenements.isEmpty()) {
 					remove(prochaineDate);
@@ -74,11 +74,11 @@ public class Echeancier extends TreeMap<Date, ArrayList<Evenement>>  {
 				evenement.declencher();
 			}
 			else {
-				System.out.println("Pas d'évènement trouvé, fin de la simulation");
+				System.out.println("Pas d'evenement trouve, fin de la simulation");
 			}
 		}
 		else {
-			System.out.println("Pas d'évènement trouvé, fin de la simulation");
+			System.out.println("Pas d'evenement trouve, fin de la simulation");
 		}
 	}
 }
