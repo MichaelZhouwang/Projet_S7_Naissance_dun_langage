@@ -1,0 +1,64 @@
+.label-type-evenement {-fx-font-weight: bold;}
+.label-emission {-fx-fill: CORAL;}
+.label-reception {-fx-fill: CORNFLOWERBLUE;}
+.label-memorisation {-fx-fill: LIMEGREEN;}
+.label-elimination {-fx-fill: BURLYWOOD;}
+.label-succes {-fx-fill: RED;}
+.label-echec {-fx-fill: GREY;}
+
+.medium-tab-pane {
+	-fx-tab-min-width: 136;
+	-fx-tab-max-width: 136;
+}
+
+.big-tab-pane {
+	-fx-tab-min-width: 220;
+	-fx-tab-max-width: 220;
+}
+
+.tab .tab-label { 
+	-fx-alignment: CENTER;
+}
+
+.table-row-cell {
+	-fx-cell-size: 28px;
+}
+
+#diagrammeEvolutionLexique StackPane {
+	-fx-cursor: hand;
+}
+
+#diagrammeEvolutionOccurrences StackPane {
+	-fx-cursor: hand;
+}
+
+#grapheSysteme Circle.sommet {
+	-fx-cursor: hand;
+}
+
+Rectangle.origine {
+	-fx-padding: 0 0 0 20;
+	-fx-stroke-width: 16;
+}
+
+Rectangle.individu-a { -fx-stroke: CHART_COLOR_1;}
+Rectangle.individu-b { -fx-stroke: CHART_COLOR_2;}
+Rectangle.individu-c { -fx-stroke: CHART_COLOR_3;}
+Rectangle.individu-d { -fx-stroke: CHART_COLOR_4;}
+Rectangle.individu-e { -fx-stroke: CHART_COLOR_5;}
+Rectangle.individu-f { -fx-stroke: CHART_COLOR_6;}
+Rectangle.individu-g { -fx-stroke: CHART_COLOR_7;}
+Rectangle.individu-h { -fx-stroke: CHART_COLOR_8;}
+Rectangle.individu-i { -fx-stroke: CHART_COLOR_9;}
+Rectangle.individu-j { -fx-stroke: CHART_COLOR_10;}
+
+Circle.individu-a { -fx-fill: CHART_COLOR_1;}
+Circle.individu-b { -fx-fill: CHART_COLOR_2;}
+Circle.individu-c { -fx-fill: CHART_COLOR_3;}
+Circle.individu-d { -fx-fill: CHART_COLOR_4;}
+Circle.individu-e { -fx-fill: CHART_COLOR_5;}
+Circle.individu-f { -fx-fill: CHART_COLOR_6;}
+Circle.individu-g { -fx-fill: CHART_COLOR_7;}
+Circle.individu-h { -fx-fill: CHART_COLOR_8;}
+Circle.individu-i { -fx-fill: CHART_COLOR_9;}
+Circle.individu-j { -fx-fill: CHART_COLOR_10;}

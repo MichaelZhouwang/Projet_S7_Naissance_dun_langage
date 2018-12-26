@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
  <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-	<comment>Configuration par default pour le systeme</comment>
-	<entry key="Graphe">./donnee/Example.n2l.txt<!--Matrice de reseau --></entry>
-	<entry key="TailleInitialeLexique">8</entry>
-	<entry key="TailleMaximaleLexique">5</entry>
-	<entry key="EMISSION">TOUJOURS_VERIFIEE<!--UtilisationConditions --></entry>
-	<entry key="RECEPTION">TOUJOURS_VERIFIEE<!--UtilisationConditions --></entry>
-	<entry key="MEMORISATION">TOUJOURS_VERIFIEE<!--UtilisationConditions --></entry>
-	<entry key="SELECTION_LEMME">SELECTION_UNIFORME<!--UtilisationStrategie --></entry>
-	<entry key="ELIMINATION_LEMME">SELECTION_MOINS_EMIS<!--UtilisationStrategie --></entry>
-	<entry key="SUCCESSION">SUCCESSION_VOISIN_ALEATOIRE<!--UtilisationStrategie --></entry>
-	<entry key="ArretCondition">LEXIQUE_PLEIN<!--ArretCondition --></entry>
-</properties>
+
+<individus>
+	<systeme>
+		<comment>Configuration par default pour le systeme</comment>
+		<NombreIndividus></NombreIndividus>
+		<Graphe>./donnee/Example.n2l.txt</Graphe>
+		<TailleInitialeLexique>5</TailleInitialeLexique>
+		<TailleMaximaleLexique>10</TailleMaximaleLexique>
+		<EMISSION>CONDITION_TOUJOURS_VERIFIEE</EMISSION>
+		<RECEPTION>CONDITION_TOUJOURS_VERIFIEE</RECEPTION>
+		<MEMORISATION>CONDITION_PROBABILITE_UNIFORME</MEMORISATION>
+		<SelectionEmission>SELECTION_ALEATOIRE</SelectionEmission>
+		<SelectionElimination>SELECTION_MOINS_EMIS</SelectionElimination>
+		<StrategieSuccession>SUCCESSION_VOISIN_ALEATOIRE</StrategieSuccession>
+		<CritereArret>DATE</CritereArret>
+		<Objectif>20</Objectif>
+	</systeme>
+
+	<individu id="1">
+		<TailleInitialeLexique>5</TailleInitialeLexique>
+		<TailleMaximaleLexique>10</TailleMaximaleLexique>
+		<EMISSION>CONDITION_TOUJOURS_VERIFIEE</EMISSION>
+		<RECEPTION>CONDITION_TOUJOURS_VERIFIEE</RECEPTION>
+		<MEMORISATION>CONDITION_PROBABILITE_UNIFORME</MEMORISATION>
+		<SelectionEmission>SELECTION_ALEATOIRE</SelectionEmission>
+		<SelectionElimination>SELECTION_MOINS_EMIS</SelectionElimination>
+		<StrategieSuccession>SUCCESSION_VOISIN_ALEATOIRE</StrategieSuccession>
+	</individu>
+</individus>

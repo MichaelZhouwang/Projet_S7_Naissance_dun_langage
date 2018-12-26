@@ -1,46 +1,66 @@
 package lecture;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 
-import condition.enums.CategorieConditionArret;
-import condition.enums.ImplementationCondition;
-import strategie.enums.ImplementationStrategie;
-import systeme.SystemeIntermediaire;
+import org.jdom2.*;
+import org.jdom2.input.SAXBuilder;
+
+import condition.enumeration.ImplementationCondition;
+import strategie.enumeration.ImplementationStrategieSelection;
+import strategie.enumeration.ImplementationStrategieSuccession;
+import systeme.*;
+import systeme.enumeration.TypeCritereArret;
 
 public class LireFichier {
 
-	private Properties systemeConfig;
+	private Element systemeConfig;
+	private List<Element> individusConfig = new ArrayList<Element>();
+
 	private int tailleInitialeLexique, tailleMaximaleLexique;
 
 	public LireFichier(String sXmlName) {
 
 		System.out.println("Lecture XML");
 
-		// lire properties
-		systemeConfig = new Properties();
-
 		try {
+			// lire properties
 			// "./config/My_config.xml"
-			systemeConfig.loadFromXML(new FileInputStream(sXmlName));
-		} catch (IOException e) {
+
+			File inputFile = new File(sXmlName);
+			SAXBuilder saxBuilder = new SAXBuilder();
+			Document document = saxBuilder.build(inputFile);
+			Element classElement = document.getRootElement();
+
+			List<Element> configList = classElement.getChildren();
+
+			for (int temp = 0; temp < configList.size(); temp++) {
+				Element property = configList.get(temp);
+				System.out.println("\nCurrent Element :" + property.getName());
+				if (property.getName().equals("individu")) {
+					individusConfig.add(property);
+					Attribute attribute = property.getAttribute("id");
+					System.out.println("Individu id : " + attribute.getValue());
+				} else if (property.getName().equals("systeme")) {
+					systemeConfig = property;
+				}
+			}
+		} catch (JDOMException e) {
 			e.printStackTrace();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
 		}
 
 	}
-	
-	public SystemeIntermediaire LireSyeteme() throws Exception {
+
+	public SystemeIntermediaire lireSyeteme() throws Exception {
 
 		System.out.println("Lecture Graphe");
 
-		String numFichier = systemeConfig.getProperty("Graphe");
-		tailleInitialeLexique = Integer.parseInt(systemeConfig.getProperty("TailleInitialeLexique"));
-		tailleMaximaleLexique = Integer.parseInt(systemeConfig.getProperty("TailleMaximaleLexique"));
-		
+		String numFichier = systemeConfig.getChild("Graphe").getValue();
+		tailleInitialeLexique = Integer.parseInt(systemeConfig.getChild("TailleInitialeLexique").getValue());
+		tailleMaximaleLexique = Integer.parseInt(systemeConfig.getChild("TailleMaximaleLexique").getValue());
+
 		boolean lireTete = true;
 		boolean lireCoordonnees = false;
 		int curSommet = 0, nbrSommet = 0;
@@ -48,7 +68,6 @@ public class LireFichier {
 
 		String nomTete;
 		String valeurTete;
-		String nomSysteme = "";
 		String[] articles;
 
 		BufferedReader reader = new BufferedReader(new FileReader(numFichier));
@@ -60,7 +79,7 @@ public class LireFichier {
 					nomTete = articles[0].trim().toUpperCase();
 					valeurTete = articles.length > 1 ? articles[1].trim() : "";
 					if (nomTete.equals("NOM")) {
-						nomSysteme = valeurTete;
+						System.out.println(valeurTete);
 					}
 					if (nomTete.equals("NOMBRESOMMET")) {
 						nbrSommet = Integer.parseInt(valeurTete);
@@ -92,55 +111,95 @@ public class LireFichier {
 		}
 
 		// charger la classe systemeIntermediaire
-		SystemeIntermediaire systemeIntermediaire = new SystemeIntermediaire(nomSysteme, matSomSom, tailleInitialeLexique, tailleMaximaleLexique);
+		SystemeIntermediaire systemeIntermediaire = new SystemeIntermediaire(matSomSom, tailleInitialeLexique,
+				tailleMaximaleLexique);
 
 		return systemeIntermediaire;
 
 	}
 
-	public HashMap<String, ImplementationCondition> LireUtilisationConditions() {
-		
-		HashMap<String, ImplementationCondition> paramUtilisation = new HashMap<String, ImplementationCondition> ();
-		
-		String paramEMISSION = systemeConfig.getProperty("EMISSION");
-		String paramRECEPTION = systemeConfig.getProperty("RECEPTION");
-		String paramMEMORISATION = systemeConfig.getProperty("MEMORISATION");
+	public HashMap<String, ImplementationCondition> lireConditions() {
 
-		paramUtilisation.put("EMISSION", ImplementationCondition.valueOf(paramEMISSION));
-		paramUtilisation.put("RECEPTION", ImplementationCondition.valueOf(paramRECEPTION));
-		paramUtilisation.put("MEMORISATION", ImplementationCondition.valueOf(paramMEMORISATION));
-		
-		return paramUtilisation;
-		
+		HashMap<String, ImplementationCondition> paramCondition = new HashMap<String, ImplementationCondition>();
+
+		String paramEMISSION = systemeConfig.getChild("EMISSION").getValue();
+		String paramRECEPTION = systemeConfig.getChild("RECEPTION").getValue();
+		String paramMEMORISATION = systemeConfig.getChild("MEMORISATION").getValue();
+
+		paramCondition.put("EMISSION", ImplementationCondition.valueOf(paramEMISSION));
+		paramCondition.put("RECEPTION", ImplementationCondition.valueOf(paramRECEPTION));
+		paramCondition.put("MEMORISATION", ImplementationCondition.valueOf(paramMEMORISATION));
+
+		return paramCondition;
+
 	}
 
-	public HashMap<String, ImplementationStrategie> LireStrategies() {
-		
-		HashMap<String, ImplementationStrategie> paramStrategies = new HashMap<String, ImplementationStrategie> ();
-		
-		String paramSELECTION_LEMME = systemeConfig.getProperty("SELECTION_LEMME");
-		String paramELIMINATION_LEMME = systemeConfig.getProperty("ELIMINATION_LEMME");
-		String paramSUCCESSION = systemeConfig.getProperty("SUCCESSION");
+	public ImplementationStrategieSelection lireStrategiesEmissionSelection() {
 
-		paramStrategies.put("SELECTION_LEMME", ImplementationStrategie.valueOf(paramSELECTION_LEMME));
-		paramStrategies.put("ELIMINATION_LEMME", ImplementationStrategie.valueOf(paramELIMINATION_LEMME));
-		paramStrategies.put("SUCCESSION", ImplementationStrategie.valueOf(paramSUCCESSION));
-		
-		return paramStrategies;
-		
+		String paramSelectionEmission = systemeConfig.getChild("SelectionEmission").getValue();
+
+		return ImplementationStrategieSelection.valueOf(paramSelectionEmission);
+
 	}
 
-	public HashMap<String, CategorieConditionArret> LireArretConditions() {
-		
-		HashMap<String, CategorieConditionArret> paramArret = new HashMap<String, CategorieConditionArret> ();
-		
-		String paramArretCondition = systemeConfig.getProperty("ArretCondition");
-		
-		paramArret.put("ArretCondition", CategorieConditionArret.valueOf(paramArretCondition));
+	public ImplementationStrategieSelection lireStrategiesEliminationSelection() {
 
+		String paramSelectionElimination = systemeConfig.getChild("SelectionElimination").getValue();
 
-		return paramArret;
-		
+		return ImplementationStrategieSelection.valueOf(paramSelectionElimination);
+
 	}
-	
+
+	public ImplementationStrategieSuccession lireStrategiesSuccession() {
+
+		String paramStrategieSuccession = systemeConfig.getChild("StrategieSuccession").getValue();
+
+		return ImplementationStrategieSuccession.valueOf(paramStrategieSuccession);
+
+	}
+
+	public CritereArret lireCritereArret() {
+
+		String paramCritereArret = systemeConfig.getChild("CritereArret").getValue();
+		int paramObjectif = Integer.parseInt(systemeConfig.getChild("Objectif").getValue());
+
+		return new CritereArret(TypeCritereArret.valueOf(paramCritereArret), paramObjectif);
+
+	}
+
+	public HashMap<Integer, Individu> lireIndividusSpecifiques() {
+		HashMap<Integer, Individu> individusSpec = new HashMap<Integer, Individu>();
+
+		for (Element individuElement : individusConfig) {
+			Individu individu = new Individu();
+			Attribute attribute = individuElement.getAttribute("id");
+			int id = Integer.parseInt(attribute.getValue());
+
+			individu.setID(id);
+
+			individu.setImplementationConditionEmission(
+					ImplementationCondition.valueOf(individuElement.getChild("EMISSION").getValue()));
+			individu.setImplementationConditionReception(
+					ImplementationCondition.valueOf(individuElement.getChild("RECEPTION").getValue()));
+			individu.setImplementationConditionMemorisation(
+					ImplementationCondition.valueOf(individuElement.getChild("MEMORISATION").getValue()));
+
+			individu.setImplementationStrategieSelectionEmission(
+					ImplementationStrategieSelection.valueOf(individuElement.getChild("SelectionEmission").getValue()));
+
+			individu.setImplementationStrategieSelectionElimination(ImplementationStrategieSelection
+					.valueOf(individuElement.getChild("SelectionElimination").getValue()));
+
+			individu.setImplementationStrategieSuccession(ImplementationStrategieSuccession
+					.valueOf(individuElement.getChild("StrategieSuccession").getValue()));
+
+			individu.obtenirLexique().generer(
+					Integer.parseInt(individuElement.getChild("TailleMaximaleLexique").getValue()),
+					Integer.parseInt(individuElement.getChild("TailleInitialeLexique").getValue()), individu);
+
+			individusSpec.put(id, individu);
+		}
+		return individusSpec;
+	}
+
 }

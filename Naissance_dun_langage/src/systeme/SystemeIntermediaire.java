@@ -3,58 +3,86 @@ package systeme;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import condition.enums.ImplementationCondition;
-import condition.enums.UtilisationCondition;
-import strategie.enums.ImplementationStrategie;
-import strategie.enums.UtilisationStrategie;
 import temps.Delais;
 
 public class SystemeIntermediaire {
-	
+
 	private ArrayList<Individu> individus;
-	private String nomSysteme;
+	private int tailleInitialeLexique;
+	private int tailleMaximaleLexique;
 	private int[][] matSomSom;
 
-	public SystemeIntermediaire(String nomSysteme, int[][] matSomSom, int tailleInitialeLexique, int tailleMaximaleLexique) throws Exception {
-		
-		this.nomSysteme = nomSysteme;
-		this.matSomSom = matSomSom;		
+	public SystemeIntermediaire(int[][] matSomSom, int tailleInitialeLexique, int tailleMaximaleLexique)
+			throws Exception {
+		this.tailleInitialeLexique = tailleInitialeLexique;
+		this.tailleMaximaleLexique = tailleMaximaleLexique;
+		this.matSomSom = matSomSom;
 		individus = new ArrayList<Individu>();
 
-		for (int numIndividu = 0; numIndividu < matSomSom.length; numIndividu++) {
-			individus.add(new Individu(tailleInitialeLexique, tailleMaximaleLexique));
-		}
-		
 	}
 	
-	public ArrayList<Individu> genererIndividus(HashMap<UtilisationCondition, ImplementationCondition> parametresConditions, HashMap<UtilisationStrategie, ImplementationStrategie> parametresStrategies) {
+	private Individu copierIndividuSpecifique(Individu individu, HashMap<Integer, Individu> lIndividusSpecifiques) {
+		for (int idSpec : lIndividusSpecifiques.keySet()) {
+			Individu individuSpec = lIndividusSpecifiques.get(idSpec);
+
+			if (individu.lireID() == idSpec) {
+				System.out.println("Testing");
+
+				individu.setImplementationConditionEmission(individuSpec.getImplementationConditionEmission());
+				individu.setImplementationConditionReception(individuSpec.getImplementationConditionReception());
+				individu.setImplementationConditionMemorisation(
+						individuSpec.getImplementationConditionMemorisation());
+
+				individu.setImplementationStrategieSelectionEmission(
+						individuSpec.getImplementationStrategieSelectionEmission());
+
+				individu.setImplementationStrategieSelectionElimination(
+						individuSpec.getImplementationStrategieSelectionElimination());
+
+				individu.setImplementationStrategieSuccession(individuSpec.getImplementationStrategieSuccession());
+
+				individu.obtenirLexique().generer(individuSpec.getLexique().lireTailleMaximale(), individuSpec.getLexique().lireTailleInitiale(), individu);
+
+			}
+		}
 		
+		return individu;
+	}
+
+	public ArrayList<Individu> genererIndividus(HashMap<Integer, Individu> lIndividusSpecifiques) {
+
+		for (int numIndividu = 0; numIndividu < matSomSom.length; numIndividu++) {
+			Individu individu = new Individu();
+			individu.setID(numIndividu + 1);
+			individu.obtenirLexique().generer(tailleMaximaleLexique, tailleInitialeLexique, individu);
+
+			individu = copierIndividuSpecifique(individu, lIndividusSpecifiques);
+
+			System.out.println(individu.obtenirLexique());
+			individus.add(individu);
+		}
+
 		for (int numIndividu = 0; numIndividu < matSomSom.length; numIndividu++) {
 
 			for (int numVoisin = 0; numVoisin < matSomSom.length; numVoisin++) {
+
 				if (matSomSom[numIndividu][numVoisin] != 0) {
-					individus.get(numIndividu).ajouterVoisin(individus.get(numVoisin));
-					
 					if (matSomSom[numIndividu][numVoisin] == 1) {
-						individus.get(numIndividu).ajouterDelaisVoisin(individus.get(numVoisin), Delais.delaisReceptionParDefaut);
+						individus.get(numIndividu)
+								.ajouterVoisin(new Voisin(individus.get(numVoisin), Delais.delaisReceptionParDefaut));
 					} else {
-						individus.get(numIndividu).ajouterDelaisVoisin(individus.get(numVoisin), new Delais(matSomSom[numIndividu][numVoisin]));
+						individus.get(numIndividu).ajouterVoisin(
+								new Voisin(individus.get(numVoisin), new Delais(matSomSom[numIndividu][numVoisin])));
 					}
 				}
-			}
 
-			for (UtilisationCondition typeCondition : parametresConditions.keySet()) {
-				individus.get(numIndividu).definirCondition(typeCondition, parametresConditions.get(typeCondition));
-			}
-			for (UtilisationStrategie typeStrategie : parametresStrategies.keySet()) {
-				individus.get(numIndividu).definirStrategie(typeStrategie, parametresStrategies.get(typeStrategie));
 			}
 		}
-		
+
 		return individus;
 	}
 
-	public String lireNom() {
-		return nomSysteme;
+	public int getNombreIndividus() {
+		return matSomSom.length;
 	}
 }

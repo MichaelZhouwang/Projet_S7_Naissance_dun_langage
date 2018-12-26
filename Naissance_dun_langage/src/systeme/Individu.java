@@ -1,398 +1,278 @@
 package systeme;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
 
-import condition.ConditionDependante;
-import condition.ConditionIndependante;
-import condition.enums.CategorieConditionArret;
-import condition.enums.ImplementationCondition;
-import condition.enums.UtilisationCondition;
-import evenement.Evenement;
-import evenement.enums.IssueEvenement;
-import evenement.enums.TypeEvenement;
+import condition.enumeration.ImplementationCondition;
+import evenement.enumeration.IssueEvenement;
+import evenement.enumeration.TypeEvenement;
+import ihm.Constantes;
 import lexique.Lemme;
 import lexique.Lexique;
 import lexique.OccurrenceLemme;
 import lexique.TableOccurrencesLemmes;
-import strategie.StrategieSelectionLemmeDependante;
-import strategie.StrategieSelectionLemmeIndependante;
-import strategie.StrategieSuccession;
-import strategie.enums.ImplementationStrategie;
-import strategie.enums.UtilisationStrategie;
+import strategie.enumeration.ImplementationStrategieSelection;
+import strategie.enumeration.ImplementationStrategieSuccession;
+import systeme.executeur.ExecuteurEvenementsIndividu;
 import temps.Date;
 import temps.Delais;
 
 public class Individu {
-	private static int effectif = 0;
+	public int getID() {
+		return ID;
+	}
+
+	private static int compteur = 0;
 	private int ID;
 	private char lettre;
-	
+
 	private Lexique lexique;
 	private TableOccurrencesLemmes tableOccurrencesLemmes;
-	
-	private ArrayList<Individu> voisins;
-	private HashMap<Individu, Delais> delaisVoisins;
-	
-	private ConditionDependante conditionEmission;
-	private ConditionDependante conditionReception;
-	private ConditionDependante conditionMemorisation;
-	
-	private StrategieSelectionLemmeDependante strategieSelectionLemme;
-	private StrategieSelectionLemmeDependante strategieEliminationLemme;
-	private StrategieSuccession strategieSuccession;
-	
-	public Individu(int tailleInitialeLexique, int tailleMaximaleLexique) {
-		ID = effectif++;
-		lettre = (char)(65 + ID);
-		
+	private ArrayList<Voisin> voisins;
+
+	private String couleur;
+
+	private ExecuteurEvenementsIndividu evenements;
+
+	private ImplementationCondition implementationConditionEmission;
+	private ImplementationCondition implementationConditionReception;
+	private ImplementationCondition implementationConditionMemorisation;
+
+	private ImplementationStrategieSelection implementationStrategieSelectionEmission;
+	private ImplementationStrategieSelection implementationStrategieSelectionElimination;
+	private ImplementationStrategieSuccession implementationStrategieSuccession;
+
+	public Individu() {
+		ID = ++compteur;
+		lettre = (char) (64 + ID);
+
+		couleur = Constantes.couleurs[(ID - 1) % Constantes.couleurs.length];
+
+		lexique = new Lexique();
 		tableOccurrencesLemmes = new TableOccurrencesLemmes();
-		lexique = new Lexique(tailleInitialeLexique, tailleMaximaleLexique);
-		lexique.generer(this);
-		
-		delaisVoisins = new HashMap<Individu, Delais>();
-		voisins = new ArrayList<Individu>();
+		voisins = new ArrayList<Voisin>();
+
+		evenements = new ExecuteurEvenementsIndividu(this);
+
+		implementationConditionEmission = Systeme.lireImplementationConditionEmissionParDefaut();
+		implementationConditionReception = Systeme.lireImplementationConditionReceptionParDefaut();
+		implementationConditionMemorisation = Systeme.lireImplementationConditionMemorisationParDefaut();
+
+		implementationStrategieSelectionEmission = Systeme.lireImplementationStrategieSelectionEmissionParDefaut();
+		implementationStrategieSelectionElimination = Systeme
+				.lireImplementationStrategieSelectionEliminationParDefaut();
+		implementationStrategieSuccession = Systeme.lireImplementationStrategieSuccessionParDefaut();
+	}
+
+	public void setID(int iD) {
+		ID = iD;
+		lettre = (char) (64 + ID);
+
+		couleur = Constantes.couleurs[(ID - 1) % Constantes.couleurs.length];
+	}
+
+	public void setImplementationConditionEmission(ImplementationCondition implementationConditionEmission) {
+		this.implementationConditionEmission = implementationConditionEmission;
+	}
+
+	public void setImplementationConditionReception(ImplementationCondition implementationConditionReception) {
+		this.implementationConditionReception = implementationConditionReception;
+	}
+
+	public void setImplementationConditionMemorisation(ImplementationCondition implementationConditionMemorisation) {
+		this.implementationConditionMemorisation = implementationConditionMemorisation;
+	}
+
+	public void setImplementationStrategieSelectionEmission(
+			ImplementationStrategieSelection implementationStrategieSelectionEmission) {
+		this.implementationStrategieSelectionEmission = implementationStrategieSelectionEmission;
+	}
+
+	public void setImplementationStrategieSelectionElimination(
+			ImplementationStrategieSelection implementationStrategieSelectionElimination) {
+		this.implementationStrategieSelectionElimination = implementationStrategieSelectionElimination;
+	}
+
+	public void setImplementationStrategieSuccession(
+			ImplementationStrategieSuccession implementationStrategieSuccession) {
+		this.implementationStrategieSuccession = implementationStrategieSuccession;
+	}
+
+	public void setLexique(Lexique lexique) {
+		this.lexique = lexique;
+	}
+
+	public Lexique getLexique() {
+		return lexique;
+	}
+
+	public ImplementationCondition getImplementationConditionEmission() {
+		return implementationConditionEmission;
+	}
+
+	public ImplementationCondition getImplementationConditionReception() {
+		return implementationConditionReception;
+	}
+
+	public ImplementationCondition getImplementationConditionMemorisation() {
+		return implementationConditionMemorisation;
+	}
+
+	public ImplementationStrategieSelection getImplementationStrategieSelectionEmission() {
+		return implementationStrategieSelectionEmission;
+	}
+
+	public ImplementationStrategieSelection getImplementationStrategieSelectionElimination() {
+		return implementationStrategieSelectionElimination;
+	}
+
+	public ImplementationStrategieSuccession getImplementationStrategieSuccession() {
+		return implementationStrategieSuccession;
+	}
+
+	public String lireCouleur() {
+		return couleur;
+	}
+
+	// toString
+
+	@Override
+	public String toString() {
+		return "Individu " + lettre;
+	}
+
+	public int lireID() {
+		return ID;
 	}
 
 	// Lettre
-	
+
 	public char lireLettre() {
 		return lettre;
 	}
-	
+
 	// Lexique
-	
-	public ArrayList<Lemme> lireLexique() {
+
+	public TableOccurrencesLemmes obtenirTableOccurrencesLemmes() {
+		return tableOccurrencesLemmes;
+	}
+
+	public OccurrenceLemme nouvelleOccurrenceLemme(int ID, OccurrenceLemme occurrenceInitiatrice, Lemme lemme,
+			TypeEvenement typeEvenement, IssueEvenement issueEvenement, Date date) {
+		return tableOccurrencesLemmes.nouvelleOccurenceLemme(ID, occurrenceInitiatrice, this, lemme, typeEvenement,
+				issueEvenement, date);
+	}
+
+	public Lexique obtenirLexique() {
 		return lexique;
 	}
-	
+
+	public Lexique retrouverLexique(Date date) {
+		Lexique lexiqueRetrouve = new Lexique();
+		lexiqueRetrouve.generer(obtenirLexique().lireTailleMaximale(), obtenirLexique().lireTailleInitiale(), this);
+
+		ArrayList<OccurrenceLemme> occurrencesLemmes = tableOccurrencesLemmes.obtenirListeOccurrencesLemmesOrdonnee(
+				Lemme.QUELCONQUE, TypeEvenement.QUELCONQUE, IssueEvenement.SUCCES, Date.valeurInitiale, date);
+
+		for (OccurrenceLemme occurrenceLemme : occurrencesLemmes) {
+			if (occurrenceLemme.lireTypeEvenement() == TypeEvenement.MEMORISATION) {
+				lexiqueRetrouve.add(occurrenceLemme.lireLemme());
+			} else if (occurrenceLemme.lireTypeEvenement() == TypeEvenement.ELIMINATION) {
+				lexiqueRetrouve.remove(occurrenceLemme.lireLemme());
+			}
+		}
+
+		return lexiqueRetrouve;
+	}
+
 	public int lireTailleLexique() {
 		return lexique.size();
 	}
-	
+
 	public boolean aLexiquePlein() {
 		return lexique.estPlein();
 	}
-	
+
 	public boolean connaitLemme(Lemme lemme) {
 		return lexique.contains(lemme);
 	}
-	
+
 	public void memoriserLemme(Lemme lemme) {
 		lexique.add(lemme);
 	}
-	
+
 	public void remplacerLemme(Lemme lemmeARemplacer, Lemme nouveauLemme) {
 		if (lexique.remove(lemmeARemplacer)) {
 			lexique.add(nouveauLemme);
 		}
 	}
-	
-	public void nouvelleOccurrenceLemme(Lemme lemme, Date date, TypeEvenement typeEvenement, IssueEvenement issueEvenement) {
-		tableOccurrencesLemmes.nouvelleOccurence(lemme, date, this, typeEvenement, issueEvenement);
-	}
-	
-	public ArrayList<OccurrenceLemme> obtenirOccurrencesLemmesSelonCriteres(Lemme lemme, TypeEvenement typeEvenement, IssueEvenement issueEvenement) {
-		return tableOccurrencesLemmes.obtenirOccurrencesSelonCriteres(lemme, typeEvenement, issueEvenement);
-	}
-	
-	public int nombreOccurrencesLemmesSelonCriteres(Lemme lemme, TypeEvenement typeEvenement, IssueEvenement issueEvenement) {
-		return tableOccurrencesLemmes.nombreOccurrencesLemmesSelonCriteres(lemme, this, typeEvenement, issueEvenement);
-	}
-	
-	public TableOccurrencesLemmes lireTableOccurrencesLemmes() {
-		return tableOccurrencesLemmes;
-	}
-	
-	// Voisins
-	
-	public void ajouterVoisin(Individu voisin) {
-		voisins.add(voisin);
-	}
-	
-	public ArrayList<Individu> lireVoisins() {
-		return voisins;
-	}
-	
-	public void ajouterDelaisVoisin(Individu voisin, Delais delais) {
-		delaisVoisins.put(voisin, delais);
-	}
-	
-	public Delais lireDelaisVoisin(Individu voisin) {
-		return delaisVoisins.get(voisin);
+
+	public ExecuteurEvenementsIndividu obtenirEvenements() {
+		return evenements;
 	}
 
 	// Conditions
-	
-	// Factory
-	public void definirCondition(UtilisationCondition typeCondition, ImplementationCondition condition) {
-		ConditionDependante conditionDependante = null;
-		
-		switch (condition) {
-			case PROBABILITE_UNIFORME:
-				conditionDependante = new ConditionProbabiliteUniforme();
-			break;
-			case TOUJOURS_VERIFIEE:
-				conditionDependante = new ConditionToujoursVerifiee();
-			break;
-			case JAMAIS_VERIFIEE:
-				conditionDependante = new ConditionJamaisVerifiee();
-			break;
-		}
-		
-		switch (typeCondition) {
-			case EMISSION:
-				conditionEmission = conditionDependante;
-				break;
-			case RECEPTION:
-				conditionReception = conditionDependante;
-				break;
-			case MEMORISATION:
-				conditionMemorisation = conditionDependante;
-				break;
-		}
+
+	public ImplementationCondition lireImplementationConditionEmission() {
+		return implementationConditionEmission;
 	}
 
-	public boolean peutEmettre(Lemme lemmeEnEmission) {
-		return conditionEmission.estSatisfaite(lemmeEnEmission);
-	}
-	
-	public boolean peutRecevoir(Lemme lemmeEnReception) {
-		return conditionReception.estSatisfaite(lemmeEnReception);
+	public void definirImplementationConditionEmission(ImplementationCondition implementation) {
+		implementationConditionEmission = implementation;
 	}
 
-	public boolean peutMemoriser(Lemme lemmeEnMemorisation) {
-		return conditionMemorisation.estSatisfaite(lemmeEnMemorisation);
+	public ImplementationCondition lireImplementationConditionReception() {
+		return implementationConditionReception;
 	}
-	
-	// Strategies
-	
-	// Factory
-	public void definirStrategie(UtilisationStrategie utilisationStrategie, ImplementationStrategie implementationStrategie) {
-		StrategieSelectionLemmeDependante strategieSelectionLemmeDependante = null;
-		StrategieSuccession strategieSuccession = null;
-		
-		switch (implementationStrategie) {
-			case SELECTION_PREMIER:
-				strategieSelectionLemmeDependante = new StrategieSelectionPremier();
-				break;
-			case SELECTION_UNIFORME:
-				strategieSelectionLemmeDependante = new StrategieSelectionUniforme();
-				break;
-			case SELECTION_MOINS_EMIS:
-				strategieSelectionLemmeDependante = new StrategieSelectionMoinsEmis();
-				break;
-			case SUCCESSION_VOISIN_ALEATOIRE:
-				strategieSuccession = new StrategieSuccessionVoisinAleatoire();
-				break;
-		}
-		
-		switch (utilisationStrategie) {
-			case SELECTION_LEMME:
-				strategieSelectionLemme = strategieSelectionLemmeDependante;
-				break;
-			case ELIMINATION_LEMME:
-				strategieEliminationLemme = strategieSelectionLemmeDependante;
-				break;
-			case SUCCESSION:
-				this.strategieSuccession = strategieSuccession;
-				break;
-		}
-	}
-	
-	public StrategieSelectionLemmeDependante lireStrategieSelection() {
-		return strategieSelectionLemme;
-	}
-	
-	public StrategieSelectionLemmeDependante lireStrategieElimination() {
-		return strategieEliminationLemme;
-	}
-	
-	public StrategieSuccession lireStrategieSuccession() {
-		return strategieSuccession;
-	}
-	
-	
-	public EvenementEmission genererEvenementEmission(Evenement evenementInitiateur) {
-		return new EvenementEmission(evenementInitiateur);
-	}
-	
-	public EvenementReception genererEvenementReception(EvenementEmission evenementInitiateur) {
-		return new EvenementReception(evenementInitiateur);
-	}
-	
-	private class EvenementEmission extends Evenement {
 
-		public EvenementEmission(Evenement evenementInitiateur) {
-			super(evenementInitiateur);
-		}
-
-		@Override
-		public void declencher() {
-			Date date = Systeme.lireDateHorloge();
-			Lemme lemmeEnEmission = Systeme.consommerLemmeCacheEvenement(lireID());
-			
-			if (peutEmettre(lemmeEnEmission)) {
-				nouvelleOccurrenceLemme(lemmeEnEmission, date, TypeEvenement.EMISSION, IssueEvenement.SUCCES);
-				
-				for (Individu voisin : lireVoisins()) {
-					Evenement evenementReception = voisin.genererEvenementReception(this);
-					Systeme.ajouterLemmeCacheEvenement(evenementReception.lireID(), lemmeEnEmission);
-					
-					Systeme.ajouterDernierEvenementEnDate(
-						evenementReception,
-						Systeme.lireDateHorloge().plusDelais(lireDelaisVoisin(voisin))
-					);
-				}
-			}
-			else {
-				nouvelleOccurrenceLemme(lemmeEnEmission, date, TypeEvenement.EMISSION, IssueEvenement.ECHEC);
-			}
-			
-			Individu successeur = lireStrategieSuccession().determinerSuccesseur();
-			Lemme lemmeAEmettre = successeur.lireStrategieSelection().determinerLemme();
-			Evenement evenementEmission = successeur.genererEvenementEmission(this);
-			
-			Systeme.ajouterLemmeCacheEvenement(evenementEmission.lireID(), lemmeAEmettre);
-			
-			Systeme.ajouterDernierEvenementEnDate(
-				evenementEmission,
-				Systeme.lireDateHorloge().plusDelais(Delais.delaisPassageParDefaut)
-			);
-			
-			Systeme.declencherProchainEvenement();
-		}
+	public void definirImplementationConditionReception(ImplementationCondition implementation) {
+		implementationConditionReception = implementation;
 	}
-	
-	public class EvenementReception extends Evenement {
 
-		public EvenementReception(EvenementEmission evenementInitiateur) {
-			super(evenementInitiateur);
-		}
-
-		@Override
-		public void declencher() {
-			Date date = Systeme.lireDateHorloge();
-			Lemme lemmeEnReception = Systeme.consommerLemmeCacheEvenement(lireID());
-			
-			if (peutRecevoir(lemmeEnReception)) {
-				nouvelleOccurrenceLemme(lemmeEnReception, date, TypeEvenement.RECEPTION, IssueEvenement.SUCCES);
-
-				if (!connaitLemme(lemmeEnReception)) {
-					if (peutMemoriser(lemmeEnReception)) {
-						
-						nouvelleOccurrenceLemme(lemmeEnReception, date, TypeEvenement.MEMORISATION, IssueEvenement.SUCCES);
-						
-						if (!aLexiquePlein()) {
-							memoriserLemme(lemmeEnReception);
-						}
-						else {					
-							Lemme lemmeEnRemplacement = lireStrategieElimination().determinerLemme(lemmeEnReception);
-							
-							nouvelleOccurrenceLemme(lemmeEnReception, date,  TypeEvenement.ELIMINATION, IssueEvenement.SUCCES);
-							
-							remplacerLemme(lemmeEnRemplacement, lemmeEnReception);
-						}
-						
-						if (aLexiquePlein()) {
-							if (Systeme.lireConditionArret() == CategorieConditionArret.LEXIQUE_PLEIN) {
-								Systeme.ajouterPremierEvenementEnDate(Systeme.genererEvenementFinal(this), date);
-							}
-						}
-					}
-					else {
-						nouvelleOccurrenceLemme(lemmeEnReception, date, TypeEvenement.MEMORISATION, IssueEvenement.ECHEC);
-					}
-				}
-			}
-			else {
-				nouvelleOccurrenceLemme(lemmeEnReception, date, TypeEvenement.RECEPTION, IssueEvenement.ECHEC);
-			}
-			Systeme.declencherProchainEvenement();
-		}
+	public ImplementationCondition lireImplementationConditionMemorisation() {
+		return implementationConditionMemorisation;
 	}
-	
-	// Classes de conditions
-	
-	private class ConditionProbabiliteUniforme extends ConditionIndependante {
-		private final Random random = new Random();
-		
-		public boolean estSatisfaite() {
-			return random.nextFloat() > 0.5;
-		}
-	}
-	
-	private class ConditionToujoursVerifiee extends ConditionIndependante {
 
-		public boolean estSatisfaite() {
-			return true;
-		}
+	public void definirImplementationConditionMemorisation(ImplementationCondition implementation) {
+		implementationConditionMemorisation = implementation;
 	}
-	
-	private class ConditionJamaisVerifiee extends ConditionIndependante {
 
-		public boolean estSatisfaite() {
-			return false;
-		}
-	}
-	
-	// Classes d'Strategies
-	
-	private class StrategieSelectionPremier extends StrategieSelectionLemmeIndependante {
+	// Strat�gies
 
-		@Override
-		public Lemme determinerLemme() {
-			return lexique.get(0);
-		}
+	public ImplementationStrategieSelection lireImplementationStrategieSelectionEmission() {
+		return implementationStrategieSelectionEmission;
 	}
-	
-	private class StrategieSelectionUniforme extends StrategieSelectionLemmeIndependante {
-		private final Random random = new Random();
 
-		@Override
-		public Lemme determinerLemme() {
-			return lexique.get(random.nextInt(lexique.size()));
-		}
+	public void definirImplementationStrategieSelectionEmission(ImplementationStrategieSelection implementation) {
+		implementationStrategieSelectionEmission = implementation;
 	}
-	
-	private class StrategieSelectionMoinsEmis extends StrategieSelectionLemmeIndependante {
-		
-		@Override
-		public Lemme determinerLemme() {
-			int nombreMinEmissions = Integer.MAX_VALUE;
-			int nombreEmissionsLemmeCourant = Integer.MAX_VALUE;
-			Lemme lemmeMinEmissions = null;
 
-			for (Lemme _lemmeCourant : tableOccurrencesLemmes.keySet()) {
-				nombreEmissionsLemmeCourant = nombreOccurrencesLemmesSelonCriteres(_lemmeCourant, TypeEvenement.EMISSION, IssueEvenement.SUCCES);
-				
-				if (connaitLemme(_lemmeCourant) && nombreEmissionsLemmeCourant < nombreMinEmissions) {
-					lemmeMinEmissions = _lemmeCourant;
-				}
-			}
-			
-			return lemmeMinEmissions;
-		}
+	public ImplementationStrategieSelection lireImplementationStrategieSelectionElimination() {
+		return implementationStrategieSelectionElimination;
 	}
-	
-	private class StrategieSuccessionVoisinAleatoire extends StrategieSuccession {
-		private final Random random = new Random();
-		
-		@Override
-		public Individu determinerSuccesseur() {
-			return voisins.get(random.nextInt(voisins.size()));
-		}
-	}
-	
-	// toString
-	
-	@Override
-	public String toString() {
-		String string = "Individu " + lettre + " : ";
-		
-		string += lexique;
 
-		return string;
+	public void definirImplementationStrategieSelectionElimination(ImplementationStrategieSelection implementation) {
+		implementationStrategieSelectionElimination = implementation;
+	}
+
+	public void definirImplementationStrategieSuccession(ImplementationStrategieSuccession implementation) {
+		implementationStrategieSuccession = implementation;
+	}
+
+	public ImplementationStrategieSuccession lireImplementationStrategieSuccession() {
+		return implementationStrategieSuccession;
+	}
+
+	// Voisins
+
+	public void ajouterVoisin(Voisin voisin) {
+		voisins.add(voisin);
+	}
+
+	public ArrayList<Voisin> obtenirVoisins() {
+		return voisins;
+	}
+
+	public Delais lireDelaisVoisin(Voisin voisin) {
+		return voisin.lireDelais();
 	}
 }
