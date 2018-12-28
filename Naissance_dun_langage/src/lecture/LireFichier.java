@@ -45,10 +45,9 @@ public class LireFichier {
 					systemeConfig = property;
 				}
 			}
-		} catch (JDOMException e) {
-			e.printStackTrace();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
+		} catch (JDOMException | IOException e) {
+			// e.printStackTrace();
+			throw new IllegalArgumentException("Chemin non valide");
 		}
 
 	}
