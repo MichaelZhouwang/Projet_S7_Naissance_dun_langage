@@ -12,11 +12,11 @@ import temps.Date;
 public class TableOccurrencesLemmes extends HashMap<TypeEvenement, HashMap<IssueEvenement, HashMap<Lemme, ArrayList<OccurrenceLemme>>>> {
 	private static final long serialVersionUID = 1L;
 
-	public OccurrenceLemme nouvelleOccurenceLemme(int ID, OccurrenceLemme occurrenceInitiatrice, Individu individu, Lemme lemme, TypeEvenement typeEvenement, IssueEvenement issueEvenement, Date date) {
+	public OccurrenceLemme nouvelleOccurenceLemme(OccurrenceLemme occurrenceInitiatrice, Individu individu, Lemme lemme, TypeEvenement typeEvenement, IssueEvenement issueEvenement, Date date) {
 		HashMap<IssueEvenement, HashMap<Lemme, ArrayList<OccurrenceLemme>>> tableOccurrencesParIssue = new HashMap<IssueEvenement, HashMap<Lemme, ArrayList<OccurrenceLemme>>>();
 		HashMap<Lemme, ArrayList<OccurrenceLemme>> tableOccurrencesParLemme = new HashMap<Lemme, ArrayList<OccurrenceLemme>>();	
 		ArrayList<OccurrenceLemme> listeOccurrences = new ArrayList<OccurrenceLemme>();
-		OccurrenceLemme nouvelleOccurrence = new OccurrenceLemme(ID, occurrenceInitiatrice, individu, lemme, typeEvenement, issueEvenement, date);
+		OccurrenceLemme nouvelleOccurrence = new OccurrenceLemme(occurrenceInitiatrice, individu, lemme, typeEvenement, issueEvenement, date);
 		
 		listeOccurrences.add(nouvelleOccurrence);
 		if (!containsKey(typeEvenement)) {

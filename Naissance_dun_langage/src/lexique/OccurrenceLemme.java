@@ -6,6 +6,7 @@ import systeme.Individu;
 import temps.Date;
 
 public class OccurrenceLemme {
+	private static int compteur = 0;
 	private int ID;
 	private OccurrenceLemme occurrenceInitiatrice;
 	private Individu individu;
@@ -14,8 +15,8 @@ public class OccurrenceLemme {
 	private IssueEvenement issueEvenement;
 	private Date date;
 	
-	public OccurrenceLemme(int ID, OccurrenceLemme occurrenceInitiatrice, Individu individu, Lemme lemme, TypeEvenement typeEvenement, IssueEvenement issueEvenement, Date date) {
-		this.ID = ID;
+	public OccurrenceLemme(OccurrenceLemme occurrenceInitiatrice, Individu individu, Lemme lemme, TypeEvenement typeEvenement, IssueEvenement issueEvenement, Date date) {
+		this.ID = ++compteur;
 		this.occurrenceInitiatrice = occurrenceInitiatrice;
 		this.individu = individu;
 		this.lemme = lemme;

@@ -51,7 +51,7 @@ public class ExecuteurEvenementsIndividu {
 			OccurrenceLemme occurrenceEmission = null;
 			
 			if (Condition.executerImplementationEmission(individu)) {
-				occurrenceEmission = individu.nouvelleOccurrenceLemme(lireID(), occurrenceInitiatrice, lemmeEnEmission, TypeEvenement.EMISSION, IssueEvenement.SUCCES, date);
+				occurrenceEmission = individu.nouvelleOccurrenceLemme(occurrenceInitiatrice, lemmeEnEmission, TypeEvenement.EMISSION, IssueEvenement.SUCCES, date);
 
 				for (Voisin voisin : individu.obtenirVoisins()) {
 					Evenement evenementReception = voisin.obtenirIndividu().obtenirEvenements().genererEvenementReception(this);
@@ -66,7 +66,7 @@ public class ExecuteurEvenementsIndividu {
 				}
 			}
 			else {
-				occurrenceEmission = individu.nouvelleOccurrenceLemme(lireID(), occurrenceInitiatrice, lemmeEnEmission, TypeEvenement.EMISSION, IssueEvenement.ECHEC, date);
+				occurrenceEmission = individu.nouvelleOccurrenceLemme(occurrenceInitiatrice, lemmeEnEmission, TypeEvenement.EMISSION, IssueEvenement.ECHEC, date);
 			}
 			
 			Voisin successeur = StrategieSuccession.executerImplementation(individu);
@@ -99,7 +99,7 @@ public class ExecuteurEvenementsIndividu {
 			OccurrenceLemme occurrenceReception = null;
 			
 			if (Condition.executerImplementationReception(individu, lemmeEnReception)) {
-				occurrenceReception = individu.nouvelleOccurrenceLemme(lireID(), occurrenceInitiatrice, lemmeEnReception, TypeEvenement.RECEPTION, IssueEvenement.SUCCES, date);
+				occurrenceReception = individu.nouvelleOccurrenceLemme(occurrenceInitiatrice, lemmeEnReception, TypeEvenement.RECEPTION, IssueEvenement.SUCCES, date);
 
 				if (!individu.connaitLemme(lemmeEnReception)) {
 					Evenement evenementMemorisation = genererEvenementMemorisation(this);
@@ -114,7 +114,7 @@ public class ExecuteurEvenementsIndividu {
 				}
 			}
 			else {
-				occurrenceReception = individu.nouvelleOccurrenceLemme(lireID(), occurrenceInitiatrice, lemmeEnReception, TypeEvenement.RECEPTION, IssueEvenement.ECHEC, date);
+				occurrenceReception = individu.nouvelleOccurrenceLemme(occurrenceInitiatrice, lemmeEnReception, TypeEvenement.RECEPTION, IssueEvenement.ECHEC, date);
 			}
 			Systeme.declencherProchainEvenement();
 		}
@@ -135,7 +135,7 @@ public class ExecuteurEvenementsIndividu {
 			
 			if (Condition.executerImplementationMemorisation(individu, lemmeEnMemorisation)) {
 				
-				occurrenceMemorisation = individu.nouvelleOccurrenceLemme(lireID(), occurrenceInitiatrice, lemmeEnMemorisation, TypeEvenement.MEMORISATION, IssueEvenement.SUCCES, date);
+				occurrenceMemorisation = individu.nouvelleOccurrenceLemme(occurrenceInitiatrice, lemmeEnMemorisation, TypeEvenement.MEMORISATION, IssueEvenement.SUCCES, date);
 				
 				if (!individu.aLexiquePlein()) {
 					individu.memoriserLemme(lemmeEnMemorisation);
@@ -170,7 +170,7 @@ public class ExecuteurEvenementsIndividu {
 				}
 			}
 			else {
-				occurrenceMemorisation = individu.nouvelleOccurrenceLemme(lireID(), occurrenceInitiatrice, lemmeEnMemorisation, TypeEvenement.MEMORISATION, IssueEvenement.ECHEC, date);
+				occurrenceMemorisation = individu.nouvelleOccurrenceLemme(occurrenceInitiatrice, lemmeEnMemorisation, TypeEvenement.MEMORISATION, IssueEvenement.ECHEC, date);
 			}
 			
 			Systeme.declencherProchainEvenement();
@@ -191,7 +191,7 @@ public class ExecuteurEvenementsIndividu {
 			
 			Lemme lemmeEnRemplacement = StrategieSelection.executerImplementationElimination(individu, lemmeEnMemorisation);
 			
-			individu.nouvelleOccurrenceLemme(lireID(), occurrenceInitiatrice, lemmeEnRemplacement, TypeEvenement.ELIMINATION, IssueEvenement.SUCCES, date);
+			individu.nouvelleOccurrenceLemme(occurrenceInitiatrice, lemmeEnRemplacement, TypeEvenement.ELIMINATION, IssueEvenement.SUCCES, date);
 			individu.remplacerLemme(lemmeEnRemplacement, lemmeEnMemorisation);
 
 			Systeme.declencherProchainEvenement();

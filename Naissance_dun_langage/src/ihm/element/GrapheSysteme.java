@@ -80,24 +80,21 @@ public class GrapheSysteme extends Pane {
 					double pourcent = 0;
 					if ((individuID + 1)  % Systeme.lireNombreIndividus() == voisinID % Systeme.lireNombreIndividus()
 							|| individuID % Systeme.lireNombreIndividus() == (voisinID + 1)  % Systeme.lireNombreIndividus()) {
-						
-						pourcent = 0.78;
-						newX1 = (1 - pourcent) * x1 + pourcent * x2;
-						newY1 = (1 - pourcent) * y1 + pourcent * y2;
-						newX2 = (pourcent) * x1 + (1 - pourcent) * x2;
-						newY2 = (pourcent) * y1 + (1 - pourcent) * y2;
+						pourcent = 0.80;
+						newX1 = (1 - pourcent) * x2 + pourcent * x1;
+						newY1 = (1 - pourcent) * y2 + pourcent * y1;
+						newX2 = (pourcent) * x2 + (1 - pourcent) * x1;
+						newY2 = (pourcent) * y2 + (1 - pourcent) * y1;
 					}
 					else {
 						pourcent = 0.88;
-						newX1 = (1 - pourcent) * x1 + pourcent * x2;
-						newY1 = (1 - pourcent) * y1 + pourcent * y2;
-						newX2 = pourcent * x1 + (1 - pourcent) * x2;
-						newY2 = pourcent * y1 + (1 - pourcent) * y2;
+						newX1 = (1 - pourcent) * x2 + pourcent * x1;
+						newY1 = (1 - pourcent) * y2 + pourcent * y1;
+						newX2 = pourcent * x2 + (1 - pourcent) * x1;
+						newY2 = pourcent * y2 + (1 - pourcent) * y1;
 					}
 					
 					Arrow arc = new Arrow(newX1, newY1, newX2, newY2);
-					//arc.getStyleClass().add("arc");
-					
 					arcs.add(arc);
 				}
 			}

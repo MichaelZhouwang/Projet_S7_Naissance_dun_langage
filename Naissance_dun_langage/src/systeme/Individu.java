@@ -78,8 +78,8 @@ public class Individu {
 		return tableOccurrencesLemmes;
 	}
 	
-	public OccurrenceLemme nouvelleOccurrenceLemme(int ID, OccurrenceLemme occurrenceInitiatrice, Lemme lemme, TypeEvenement typeEvenement, IssueEvenement issueEvenement, Date date) {
-		return tableOccurrencesLemmes.nouvelleOccurenceLemme(ID, occurrenceInitiatrice, this, lemme, typeEvenement, issueEvenement, date);
+	public OccurrenceLemme nouvelleOccurrenceLemme(OccurrenceLemme occurrenceInitiatrice, Lemme lemme, TypeEvenement typeEvenement, IssueEvenement issueEvenement, Date date) {
+		return tableOccurrencesLemmes.nouvelleOccurenceLemme(occurrenceInitiatrice, this, lemme, typeEvenement, issueEvenement, date);
 	}
 	
 	public Lexique obtenirLexique() {
