@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<racine>
+	<systeme nombreIndividus="4" tailleInitialeLexiqueParDefaut="5" tailleMaximaleLexiqueParDefaut="10" fichierGraphe="data/graphe.txt">
+		<implConditionEmissionParDefaut>CONDITION_TOUJOURS_VERIFIEE</implConditionEmissionParDefaut>
+		<implConditionReceptionParDefaut>CONDITION_PROBABILITE_UNIFORME</implConditionReceptionParDefaut>
+		<implConditionMemorisationParDefaut>CONDITION_PROBABILITE_UNIFORME</implConditionMemorisationParDefaut>
+		<implStrategieSelectionEmissionParDefaut>SELECTION_ALEATOIRE</implStrategieSelectionEmissionParDefaut>
+		<implStrategieSelectionEliminationParDefaut>SELECTION_ALEATOIRE</implStrategieSelectionEliminationParDefaut>
+		<implStrategieSuccessionParDefaut>SUCCESSION_VOISIN_ALEATOIRE</implStrategieSuccessionParDefaut>
+		<critereArret objectifCritereArret="40">
+			<typeCritereArret>DATE_ATTEINTE</typeCritereArret>
+		</critereArret>
+	</systeme>
+	
+	<individu id="1" tailleInitialeLexique="2" tailleMaximaleLexique="5">
+		<implConditionEmission>CONDITION_TOUJOURS_VERIFIEE</implConditionEmission>
+		<implConditionReception>CONDITION_TOUJOURS_VERIFIEE</implConditionReception>
+		<implConditionMemorisation>CONDITION_TOUJOURS_VERIFIEE</implConditionMemorisation>
+	</individu>
+	<individu id="2" tailleInitialeLexique="10"></individu>
+</racine>

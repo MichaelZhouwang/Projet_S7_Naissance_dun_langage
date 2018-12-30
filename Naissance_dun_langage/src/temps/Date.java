@@ -1,7 +1,7 @@
 package temps;
 
 public class Date implements Comparable<Date> {
-	public static int valeurInitiale = 0;
+	public static final Date valeurInitiale = new Date(0);
 	
 	private int valeur;
 
@@ -9,8 +9,8 @@ public class Date implements Comparable<Date> {
 		this.valeur = valeur;
 	}
 	
-	public Date plusDelais(Delais delais) {
-		return new Date(valeur + delais.lireValeur());
+	public static Date depuisValeur(int valeur) {
+		return new Date(valeur);
 	}
 	
 	public static Date dateSuivante(Date date) {
@@ -21,13 +21,40 @@ public class Date implements Comparable<Date> {
 		return valeur;
 	}
 	
+	public Date plusDelais(Delais delais) {
+		return new Date(valeur + delais.lireValeur());
+	}
+	
 	public boolean estApres(Date date) {
-		return valeur > valeur;
+		return valeur >= date.lireValeur();
+	}
+	
+	public boolean estAvant(Date date) {
+		return valeur <= date.lireValeur();
 	}
 	
 	@Override
 	public String toString() {
-		return Integer.toString(valeur);
+		return String.valueOf(valeur);
+	}
+
+	@Override
+	public boolean equals(Object objet){
+		if (objet == null)
+			return false;
+		if (objet == this)
+			return true;
+		if (!(objet instanceof Date))
+			return false;
+		
+		Date date = (Date)objet;
+		return lireValeur() == date.lireValeur();
+	}
+
+	public static Date depuisString(String date) throws NumberFormatException {
+		int dateValue = Integer.parseUnsignedInt(date);
+		
+		return new Date(dateValue);
 	}
 
 	@Override

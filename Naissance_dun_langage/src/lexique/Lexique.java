@@ -7,29 +7,41 @@ import systeme.Individu;
 public class Lexique extends ArrayList<Lemme> {
 	private static final long serialVersionUID = 1L;
 	
-	private int tailleMaximale;
 	private int tailleInitiale;
+	private int tailleMaximale;
 	
-	public Lexique(int tailleMaximale, int tailleInitiale) {
+	public Lexique() {
+		tailleInitiale = 0;
+		tailleMaximale = 0;
+	}
+	
+	public Lexique(Lexique lexique) {
+		tailleInitiale = lexique.lireTailleInitiale();
+		tailleMaximale = lexique.lireTailleMaximale();
+		
+		for (Lemme lemme : lexique) {
+			add(lemme);
+		}
+	}
+	
+	public void generer(int tailleInitiale, int tailleMaximale, Individu initiateur) {
+		this.tailleInitiale = tailleInitiale;
 		this.tailleMaximale = tailleMaximale;
-		this.tailleInitiale = Math.min(tailleMaximale, tailleInitiale);
+		
+		for (int indice = 1; indice <= tailleInitiale; indice++) {
+			add(new Lemme(initiateur, Character.toString(initiateur.lireLettre()) + indice));
+		}
+	}
+	
+	public int lireTailleInitiale() {
+		return tailleInitiale;
 	}
 	
 	public int lireTailleMaximale() {
 		return tailleMaximale;
 	}
-
-	public int lireTailleInitiale() {
-		return tailleInitiale;
-	}
 	
 	public boolean estPlein() {
-		return size() == tailleMaximale;
-	}
-	
-	public void generer(Individu initiateur) {
-		for (int i = 1; i <= tailleInitiale; i++) {
-			add(new Lemme(initiateur, Character.toString(initiateur.lireLettre()) + i));
-		}
+		return size() >= tailleMaximale;
 	}
 }

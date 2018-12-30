@@ -1,54 +1,83 @@
 package lexique;
 
-import evenement.enums.IssueEvenement;
-import evenement.enums.TypeEvenement;
+import evenement.enumeration.IssueEvenement;
+import evenement.enumeration.TypeEvenement;
 import systeme.Individu;
 import temps.Date;
 
 public class OccurrenceLemme {
-	private static int compteur = 0;
 	private int ID;
-	
-	private Lemme lemme;
-	private Date date;
+	private OccurrenceLemme occurrenceInitiatrice;
 	private Individu individu;
+	private Lemme lemme;
 	private TypeEvenement typeEvenement;
 	private IssueEvenement issueEvenement;
+	private Date date;
 	
-	public OccurrenceLemme(Lemme lemme, Date date, Individu individu, TypeEvenement typeEvenement, IssueEvenement issueEvenement) {
-		ID = ++compteur;
-		this.lemme = lemme;
-		this.date = date;
+	public OccurrenceLemme(int ID, OccurrenceLemme occurrenceInitiatrice, Individu individu, Lemme lemme, TypeEvenement typeEvenement, IssueEvenement issueEvenement, Date date) {
+		this.ID = ID;
+		this.occurrenceInitiatrice = occurrenceInitiatrice;
 		this.individu = individu;
+		this.lemme = lemme;
 		this.typeEvenement = typeEvenement;
 		this.issueEvenement = issueEvenement;
+		this.date = date;
 	}
 	
-	public static int lireCompteur() {
-		return compteur;
+	@Override
+	public String toString() {
+		String string = "";
+		
+		switch (getTypeEvenement()) {
+			case EMISSION:
+				break;
+			case RECEPTION:
+				string += "\t";
+				break;
+			case MEMORISATION:
+				string += "\t\t";
+				break;
+			case ELIMINATION:
+				string += "\t\t\t";
+				break;
+			case QUELCONQUE:
+				break;
+		}
+		string += getTypeEvenement() + " ("
+			+ getIssueEvenement() + ") par "
+			+ getIndividu().lireLettre() + " de "
+			+ getLemme() + " à la date "
+			+ getDate() + " [ev. "
+			+ getID() + " initié par " + ((getOccurrenceInitiatrice() == null) ? "null" : getOccurrenceInitiatrice().getID()) + "]";
+		
+		return string;
 	}
-	
-	public int lireID() {
+
+	public int getID() {
 		return ID;
 	}
 	
-	public Lemme lireLemme() {
-		return lemme;
+	public OccurrenceLemme getOccurrenceInitiatrice() {
+		return occurrenceInitiatrice;
 	}
 	
-	public Date lireDate() {
-		return date;
-	}
-	
-	public Individu lireIndividu() {
+	public Individu getIndividu() {
 		return individu;
 	}
 	
-	public TypeEvenement lireTypeEvenement() {
+	public Lemme getLemme() {
+		return lemme;
+	}
+
+	public TypeEvenement getTypeEvenement() {
 		return typeEvenement;
 	}
 	
-	public IssueEvenement lireIssueEvenement() {
+	public IssueEvenement getIssueEvenement() {
 		return issueEvenement;
+	}
+	
+	public Date getDate() {
+		return date;
 	}
 }
