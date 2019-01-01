@@ -1,5 +1,11 @@
 package exception;
 
+/**
+ * Exception levee a l'interieur d'une implementation de la classe abstraite StrategieSelection ou StrategieSuccession
+ * 
+ * @author Charles MECHERIKI & Yongda LIN
+ *
+ */
 public class StrategieException extends Exception {
 	private static final long serialVersionUID = 1L;
 	
@@ -7,7 +13,11 @@ public class StrategieException extends Exception {
 		super();
 	}
 	
-	public StrategieException(String message) {
-		super(message);
+	public StrategieException(Throwable cause) {
+		super(cause);
+	}
+	
+	public StrategieException(String message, Throwable cause) {
+		super(message, cause);
 	}
 }

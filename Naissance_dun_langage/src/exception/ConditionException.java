@@ -1,5 +1,11 @@
 package exception;
 
+/**
+ * Exception levee a l'interieur d'une implementation de la classe abstraite Condition
+ * 
+ * @author Charles MECHERIKI & Yongda LIN
+ *
+ */
 public class ConditionException extends Exception {
 	private static final long serialVersionUID = 1L;
 	
@@ -7,7 +13,11 @@ public class ConditionException extends Exception {
 		super();
 	}
 	
-	public ConditionException(String message) {
-		super(message);
+	public ConditionException(Throwable cause) {
+		super(cause);
+	}
+	
+	public ConditionException(String message, Throwable cause) {
+		super(message, cause);
 	}
 }

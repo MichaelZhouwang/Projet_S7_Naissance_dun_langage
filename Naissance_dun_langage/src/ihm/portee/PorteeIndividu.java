@@ -4,18 +4,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import evenement.enumeration.IssueEvenement;
-import evenement.enumeration.TypeEvenement;
 import ihm.bean.LemmeMemorise;
 import ihm.bean.Parametre;
-import lexique.Lemme;
-import lexique.Lexique;
-import lexique.OccurrenceLemme;
-import lexique.ComparateurOccurrenceLemmeDate;
 import systeme.Individu;
 import systeme.Systeme;
-import temps.Date;
+import systeme.evenement.enumeration.IssueEvenement;
+import systeme.evenement.enumeration.TypeEvenement;
+import systeme.lexique.ComparateurOccurrenceLemmeDate;
+import systeme.lexique.Lemme;
+import systeme.lexique.Lexique;
+import systeme.lexique.OccurrenceLemme;
+import systeme.temps.Date;
 
+/**
+ * Portee relative a un individu
+ * 
+ * @author Charles MECHERIKI & Yongda LIN
+ *
+ */
 public class PorteeIndividu extends Portee {
 	private Individu individu;
 	

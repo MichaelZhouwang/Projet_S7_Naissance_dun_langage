@@ -3,133 +3,174 @@ package lecture;
 import java.util.ArrayList;
 import condition.enumeration.ImplementationCondition;
 import strategie.enumeration.ImplementationStrategieSelection;
-import strategie.enumeration.ImplementationStrategieSuccession;
+import strategie.enumeration.ImplentationStrategieSuccession;
 import systeme.CritereArret;
 import systeme.Individu;
-import systeme.Voisin;
-import temps.Delais;
 
+/**
+ * La configuration du systeme, provenant directement de la lecture des fichiers de configuration
+ * Cette classe sert avant tout de conteneur a disposition du systeme
+ * 
+ * @author Charles MECHERIKI & Yongda LIN
+ *
+ */
 public class ConfigurationSysteme {
-
 	private int nombreIndividus;
-
 	private int tailleInitialeLexiqueParDefaut;
 	private int tailleMaximaleLexiqueParDefaut;
 	
 	private ImplementationStrategieSelection implStrategieSelectionEmissionParDefaut;
 	private ImplementationStrategieSelection implStrategieSelectionEliminationParDefaut;
-	private ImplementationStrategieSuccession implStrategieSuccessionParDefaut;
-	
+	private ImplentationStrategieSuccession implStrategieSuccessionParDefaut;
 	private ImplementationCondition implConditionEmissionParDefaut;
 	private ImplementationCondition implConditionReceptionParDefaut;
 	private ImplementationCondition implConditionMemorisationParDefaut;
 	
 	private CritereArret critereArret;
-	
 	private ArrayList<Individu> individus;
-	
-	public ConfigurationSysteme() {
-		individus = new ArrayList<Individu>();
+	private int[][] matriceVoisinage;
+	/**
+	 * Cree une configuration systeme avec tous ses composants - sauf les individus, a ajouter au fur et a mesure de leur creation
+	 * 
+	 * @param nombreIndividus								le nombre d'individus du systeme
+	 * @param tailleInitialeLexiqueParDefaut				la taille initiale de lexique par defaut pour les individus
+	 * @param tailleMaximaleLexiqueParDefaut				la taille maximale de lexique par defaut pour les individus
+	 * @param implConditionEmissionParDefaut				la condition d'emission par defaut pour les individus
+	 * @param implConditionReceptionParDefaut				la condition de reception par defaut pour les individus
+	 * @param implConditionMemorisationParDefaut			la condition de memorisation par defaut pour les individus
+	 * @param implStrategieSelectionEmissionParDefaut		la strategie de selection pour emission par defaut pour les individus
+	 * @param implStrategieSelectionEliminationParDefaut	la strategie de selection pour elimination par defaut pour les individus
+	 * @param implStrategieSuccessionParDefaut				la strategie de succession par defaut pour les individus
+	 * @param critereArret									le critere d'arret de la simulation
+	 */
+	public ConfigurationSysteme(
+			int nombreIndividus, int tailleInitialeLexiqueParDefaut, int tailleMaximaleLexiqueParDefaut,
+			ImplementationCondition implConditionEmissionParDefaut,
+			ImplementationCondition implConditionReceptionParDefaut,
+			ImplementationCondition implConditionMemorisationParDefaut,
+			ImplementationStrategieSelection implStrategieSelectionEmissionParDefaut, 
+			ImplementationStrategieSelection implStrategieSelectionEliminationParDefaut,
+			ImplentationStrategieSuccession implStrategieSuccessionParDefaut,
+			CritereArret critereArret, ArrayList<Individu> individus, int[][] matriceVoisinage) {
+		this.nombreIndividus = nombreIndividus;
+		this.tailleInitialeLexiqueParDefaut = tailleInitialeLexiqueParDefaut;
+		this.tailleMaximaleLexiqueParDefaut = tailleMaximaleLexiqueParDefaut;
+		this.implConditionEmissionParDefaut = implConditionEmissionParDefaut;
+		this.implConditionReceptionParDefaut = implConditionReceptionParDefaut;
+		this.implConditionMemorisationParDefaut = implConditionMemorisationParDefaut;
+		this.implStrategieSelectionEmissionParDefaut = implStrategieSelectionEmissionParDefaut;
+		this.implStrategieSelectionEliminationParDefaut = implStrategieSelectionEliminationParDefaut;
+		this.implStrategieSuccessionParDefaut = implStrategieSuccessionParDefaut;
+		this.critereArret = critereArret;
+		this.individus = individus;
+		this.matriceVoisinage = matriceVoisinage;
 	}
 
-	public int getNombreIndividus() {
+	 /**
+	 * Renvoie le nombre d'individus du systeme
+	 * 
+	 * @return le nombre d'individus du systeme
+	 */
+	public int lireNombreIndividus() {
 		return nombreIndividus;
 	}
 
-	public void setNombreIndividus(int nombreIndividus) {
-		this.nombreIndividus = nombreIndividus;
-	}
-
-	public int getTailleInitialeLexiqueParDefaut() {
+	/**
+	 * Renvoie la taille initiale de lexique par defaut pour les individus
+	 * 
+	 * @return la taille initiale de lexique par defaut pour les individus
+	 */
+	public int lireTailleInitialeLexiqueParDefaut() {
 		return tailleInitialeLexiqueParDefaut;
 	}
 
-	public void setTailleInitialeLexiqueParDefaut(int tailleInitialeLexiqueParDefaut) {
-		this.tailleInitialeLexiqueParDefaut = tailleInitialeLexiqueParDefaut;
-	}
-
-	public int getTailleMaximaleLexiqueParDefaut() {
+	/**
+	 * Renvoie la taille maximale de lexique par defaut pour les individus
+	 * 
+	 * @return la taille maximale de lexique par defaut pour les individus
+	 */
+	public int lireTailleMaximaleLexiqueParDefaut() {
 		return tailleMaximaleLexiqueParDefaut;
 	}
 
-	public void setTailleMaximaleLexiqueParDefaut(int tailleMaximaleLexiqueParDefaut) {
-		this.tailleMaximaleLexiqueParDefaut = tailleMaximaleLexiqueParDefaut;
-	}
-
-	public ImplementationStrategieSelection getImplStrategieSelectionEmissionParDefaut() {
-		return implStrategieSelectionEmissionParDefaut;
-	}
-
-	public void setImplStrategieSelectionEmissionParDefaut(ImplementationStrategieSelection implStrategieSelectionEmissionParDefaut) {
-		this.implStrategieSelectionEmissionParDefaut = implStrategieSelectionEmissionParDefaut;
-	}
-
-	public ImplementationStrategieSelection getImplStrategieSelectionEliminationParDefaut() {
-		return implStrategieSelectionEliminationParDefaut;
-	}
-
-	public void setImplStrategieSelectionEliminationParDefaut(ImplementationStrategieSelection implStrategieSelectionEliminationParDefaut) {
-		this.implStrategieSelectionEliminationParDefaut = implStrategieSelectionEliminationParDefaut;
-	}
-
-	public ImplementationStrategieSuccession getImplStrategieSuccessionParDefaut() {
-		return implStrategieSuccessionParDefaut;
-	}
-
-	public void setImplStrategieSuccessionParDefaut(ImplementationStrategieSuccession implStrategieSuccessionParDefaut) {
-		this.implStrategieSuccessionParDefaut = implStrategieSuccessionParDefaut;
-	}
-
-	public ImplementationCondition getImplConditionEmissionParDefaut() {
+	/**
+	 * Renvoie la condition d'emission par defaut pour les individus
+	 * 
+	 * @return la condition d'emission par defaut pour les individus
+	 */
+	public ImplementationCondition lireImplConditionEmissionParDefaut() {
 		return implConditionEmissionParDefaut;
 	}
 
-	public void setImplConditionEmissionParDefaut(ImplementationCondition implConditionEmissionParDefaut) {
-		this.implConditionEmissionParDefaut = implConditionEmissionParDefaut;
-	}
-
-	public ImplementationCondition getImplConditionReceptionParDefaut() {
+	/**
+	 * Renvoie la condition de reception par defaut pour les individus
+	 * 
+	 * @return la condition de reception par defaut pour les individus
+	 */
+	public ImplementationCondition lireImplConditionReceptionParDefaut() {
 		return implConditionReceptionParDefaut;
 	}
 
-	public void setImplConditionReceptionParDefaut(ImplementationCondition implConditionReceptionParDefaut) {
-		this.implConditionReceptionParDefaut = implConditionReceptionParDefaut;
-	}
-
-	public ImplementationCondition getImplConditionMemorisationParDefaut() {
+	/**
+	 * Renvoie la condition de memorisation par defaut pour les individus
+	 * 
+	 * @return la condition de memorisation par defaut pour les individus
+	 */
+	public ImplementationCondition lireImplConditionMemorisationParDefaut() {
 		return implConditionMemorisationParDefaut;
 	}
-
-	public void setImplConditionMemorisationParDefaut(ImplementationCondition implConditionMemorisationParDefaut) {
-		this.implConditionMemorisationParDefaut = implConditionMemorisationParDefaut;
+	
+	/**
+	 * Renvoie la strategie de selection pour emission par defaut pour les individus
+	 * 
+	 * @return la strategie de selection pour emission par defaut pour les individus
+	 */
+	public ImplementationStrategieSelection lireImplStrategieSelectionEmissionParDefaut() {
+		return implStrategieSelectionEmissionParDefaut;
 	}
 
-	public ArrayList<Individu> getIndividus() {
+	/**
+	 * Renvoie la strategie de selection pour elimination par defaut pour les individus
+	 * 
+	 * @return la strategie de selection pour elimination par defaut pour les individus
+	 */
+	public ImplementationStrategieSelection lireImplStrategieSelectionEliminationParDefaut() {
+		return implStrategieSelectionEliminationParDefaut;
+	}
+
+	/**
+	 * Renvoie la strategie de succession par defaut pour les individus
+	 * 
+	 * @return la strategie de succession par defaut pour les individus
+	 */
+	public ImplentationStrategieSuccession lireImplStrategieSuccessionParDefaut() {
+		return implStrategieSuccessionParDefaut;
+	}
+
+	/**
+	 * Renvoie le critere d'arret de la simulation
+	 * 
+	 * @return le critere d'arret de la simulation
+	 */
+	public CritereArret lireCritereArret() {
+		return critereArret;
+	}
+	
+	/**
+	 * Renvoie les individus du systeme
+	 * 
+	 * @return les individus du systeme
+	 */
+	public ArrayList<Individu> obtenirIndividus() {
 		return individus;
 	}
 	
-	public void setIndividus(ArrayList<Individu> individus) {
-		this.individus = individus;
-	}
-	
-	public CritereArret getCritereArret() {
-		return critereArret;
-	}
-
-	public void setCritereArret(CritereArret critereArret) {
-		this.critereArret = critereArret;
-	}
-	
-	public void genererVoisinageDepuisMatrice(int[][] matriceVoisinage) {
-		for (int indiceIndividu = 0; indiceIndividu < matriceVoisinage.length; indiceIndividu++) {
-			for (int indiceVoisin = 0; indiceVoisin < matriceVoisinage.length; indiceVoisin++) {
-				if (matriceVoisinage[indiceIndividu][indiceVoisin] > 0) {
-					individus.get(indiceIndividu).ajouterVoisin(
-						new Voisin(individus.get(indiceVoisin),
-						new Delais(matriceVoisinage[indiceIndividu][indiceVoisin]))
-					);
-				}
-			}
-		}
+	/**
+	 * Renvoie la matrice de voisinage
+	 * 
+	 * @return la matrice de voisinage
+	 */
+	public int[][] lireMatriceVoisinage() {
+		return matriceVoisinage;
 	}
 }

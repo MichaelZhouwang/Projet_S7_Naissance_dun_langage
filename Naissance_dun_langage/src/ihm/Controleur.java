@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import evenement.enumeration.IssueEvenement;
-import evenement.enumeration.TypeEvenement;
 import ihm.bean.LemmeMemorise;
 import ihm.bean.Parametre;
 import ihm.element.GrapheSysteme;
@@ -43,12 +41,23 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import lexique.Lemme;
-import lexique.OccurrenceLemme;
 import systeme.Individu;
 import systeme.Systeme;
-import temps.Date;
+import systeme.evenement.enumeration.IssueEvenement;
+import systeme.evenement.enumeration.TypeEvenement;
+import systeme.lexique.Lemme;
+import systeme.lexique.OccurrenceLemme;
+import systeme.temps.Date;
 
+/**
+ * Controleur de l'application
+ * 
+ * Il permet de fournir a l'IHM les informations du systeme a travers les classes PorteeIndividu et PorteeSysteme 
+ * et s'occupe interpreter les actions de l'utilisateur
+ * 
+ * @author Charles MECHERIKI & Yongda LIN
+ *
+ */
 public class Controleur implements Initializable {
 
 	// Boites de choix
@@ -121,6 +130,7 @@ public class Controleur implements Initializable {
 	private final Double[] pointsFlecheGauche = new Double[] { 0.0, 0.0, 12.0, 6.0, 0.0, 12.0 };
 	private final Double[] pointsFlecheDroite = new Double[] { 12.0, 0.0, 0.0, 6.0, 12.0, 12.0 };
 
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		initialiserPortees();
@@ -142,6 +152,9 @@ public class Controleur implements Initializable {
 		remplirTableParametres();
 	}
 
+	/**
+	 * Lance les listeners associes aux differentes ChoiceBox de l'IHM
+	 */
 	public void lancerListeners() {
 		choixPortee.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Portee>() {
 			@Override
@@ -182,6 +195,9 @@ public class Controleur implements Initializable {
 				});
 	}
 
+	/**
+	 * Initialise la ChoiceBox portees avec la portee relative au systeme et celles relatives aux individus
+	 */
 	public void initialiserPortees() {
 		portees = new ArrayList<Portee>();
 
@@ -195,6 +211,9 @@ public class Controleur implements Initializable {
 		portee = choixPortee.getSelectionModel().getSelectedItem();
 	}
 
+	/**
+	 * Initialise les dates reperes et les dates de details des diagrammes en fonction de la date de l'horloge du systeme
+	 */
 	public void initialiserDates() {
 		datesRepere = new ArrayList<Date>();
 
@@ -214,6 +233,9 @@ public class Controleur implements Initializable {
 		dateDetailOccurrences = Systeme.lireDateHorloge();
 	}
 
+	/**
+	 * Cree les fleches de details des diagrammes
+	 */
 	public void creerFlechesDetailsDiagrammes() {
 		int indiceDateDetail = datesRepere.indexOf(Systeme.lireDateHorloge());
 
@@ -247,18 +269,27 @@ public class Controleur implements Initializable {
 		conteneurDiagrammeEvolutionOccurrences.getChildren().add(flecheDroiteDetailDiagrammeOccurrences);
 	}
 
+	/**
+	 * Initialise la ChoiceBox contenant les types d'evenement
+	 */
 	public void initialiserTypesEvenement() {
 		choixTypeEvenementOccurrences.getItems().addAll(FXCollections.observableArrayList(TypeEvenement.values()));
 		choixTypeEvenementOccurrences.getSelectionModel().selectFirst();
 		typeEvenementOccurrences = choixTypeEvenementOccurrences.getSelectionModel().getSelectedItem();
 	}
 
+	/**
+	 * Initialise la ChoiceBox contenant les issues d'evenement
+	 */
 	public void initialiserIssuesEvenement() {
 		choixIssueEvenementOccurrences.getItems().addAll(FXCollections.observableArrayList(IssueEvenement.values()));
 		choixIssueEvenementOccurrences.getSelectionModel().selectFirst();
 		issueEvenementOccurrences = choixIssueEvenementOccurrences.getSelectionModel().getSelectedItem();
 	}
 
+	/**
+	 * Cree le graphe du systeme et associe a ses sommets le changement de portee adequat
+	 */
 	public void creerGrapheSysteme() {
 		GrapheSysteme graphe = new GrapheSysteme(portees, grapheSysteme.getPrefWidth(), grapheSysteme.getPrefHeight());
 
@@ -285,6 +316,9 @@ public class Controleur implements Initializable {
 		grapheSysteme.getChildren().addAll(graphe.genererDelais());
 	}
 
+	/**
+	 * Remplie le TextFlow texteEvenements contenant les evenements relatifs a la portee actuelle
+	 */
 	public void remplirTexteEvenements() {
 		ArrayList<OccurrenceLemme> listeOccurrences = portee.obtenirListeOccurrences(Systeme.lireDateHorloge(),
 				TypeEvenement.QUELCONQUE, IssueEvenement.QUELCONQUE);
@@ -364,8 +398,7 @@ public class Controleur implements Initializable {
 
 		textesEvenements.add(
 			new Text("===========================================================\n"
-					+ "\t\t\t\tFin de la simulation [" + Systeme.lireTypeCritereArret() + " = "
-					+ Systeme.lireObjectifCritereArret() + "]\n"
+					+ "\t\t\t\tFin de la simulation : " + Systeme.lireMessageFin() + "\n"
 					+ "==========================================================="));
 
 		texteEvenements.getChildren().clear();
@@ -373,6 +406,9 @@ public class Controleur implements Initializable {
 		evenements.addAll(textesEvenements);
 	}
 
+	/**
+	 * Remplie la TableView tableParametres contenant les parametres relatifs la portee actuelle
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void remplirTableParametres() {
 		ArrayList<Parametre> donneesTableParametres = portee.obtenirListeParametres();
@@ -386,49 +422,9 @@ public class Controleur implements Initializable {
 		tableParametres.setItems(obsListeParametres);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void remplirTableLexique() {
-
-		ArrayList<LemmeMemorise> listeLemmesMemorises = portee.obtenirListeLemmesMemorises(dateDetailLexique);
-		ObservableList<LemmeMemorise> obsListeOccurrences = FXCollections.observableArrayList(listeLemmesMemorises);
-
-		((TableColumn) tableLexique.getColumns().get(0)).setCellFactory(column -> {
-			return new TableCell<LemmeMemorise, Lemme>() {
-				@Override
-				protected void updateItem(Lemme item, boolean empty) {
-					super.updateItem(item, empty);
-					setAlignment(Pos.CENTER);
-					if (empty) {
-						setGraphic(null);
-					} else {
-						Rectangle rectangle = new Rectangle(0, 0, 14, 14);
-						setGraphic(rectangle);
-						rectangle.getStyleClass().add(item.lireInitiateur().lireNomClasse());
-						rectangle.getStyleClass().add("origine");
-					}
-				}
-			};
-		});
-		((TableColumn) tableLexique.getColumns().get(0))
-				.setCellValueFactory(new PropertyValueFactory<LemmeMemorise, Lemme>("lemme"));
-		((TableColumn) tableLexique.getColumns().get(1))
-				.setCellValueFactory(new PropertyValueFactory<LemmeMemorise, Lemme>("lemme"));
-		((TableColumn) tableLexique.getColumns().get(2))
-				.setCellValueFactory(new PropertyValueFactory<LemmeMemorise, Individu>("emetteur"));
-		((TableColumn) tableLexique.getColumns().get(3))
-				.setCellValueFactory(new PropertyValueFactory<LemmeMemorise, Individu>("recepteur"));
-		((TableColumn) tableLexique.getColumns().get(4))
-				.setCellValueFactory(new PropertyValueFactory<LemmeMemorise, Date>("dateMemorisation"));
-
-		tableLexique.setItems(obsListeOccurrences);
-
-		if (comparateurTableLexique == null) {
-			comparateurTableLexique = ((TableColumn) tableLexique.getColumns().get(4)).getComparator().reversed();
-		}
-		((TableColumn) tableLexique.getColumns().get(4)).setComparator(comparateurTableLexique);
-		tableLexique.getSortOrder().add(((TableColumn) tableLexique.getColumns().get(4)));
-	}
-
+	/**
+	 * Cree le diagramme representant la composition du lexique relatif a la portee actuelle
+	 */
 	public void creerDiagrammeLexique() {
 		HashMap<Individu, Integer> donnees = portee
 				.obtenirDonneesDiagrammeCompositionLexique(Systeme.lireDateHorloge());
@@ -445,6 +441,9 @@ public class Controleur implements Initializable {
 		diagrammeLexique.setTitle("Composition finale du lexique [" + portee + "]");
 	}
 
+	/**
+	 * Cree le diagramme representant l'evolution de la composition du lexique relatif a la portee actuelle
+	 */
 	public void creerDiagrammeEvolutionLexique() {
 		diagrammeEvolutionLexique.getXAxis().setLabel("Date");
 		diagrammeEvolutionLexique.getYAxis().setLabel("Taille");
@@ -494,6 +493,9 @@ public class Controleur implements Initializable {
 		}
 	}
 
+	/**
+	 * Cree le diagramme representant l'evolution des occurrences de lemmes relatif a la portee actuelle
+	 */
 	public void creerDiagrammeEvolutionOccurrences() {
 		diagrammeEvolutionOccurrences.getXAxis().setLabel("Date");
 		diagrammeEvolutionOccurrences.getYAxis().setLabel("Occurrences");
@@ -541,7 +543,59 @@ public class Controleur implements Initializable {
 			}
 		}
 	}
+	
+	/**
+	 * Remplie la TableView tableLexique contenant les lemmes (memorises) composant le lexique final 
+	 * relativement a la portee actuelle et la date selectionnee par l'utilisateur
+	 * 
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void remplirTableLexique() {
+		ArrayList<LemmeMemorise> listeLemmesMemorises = portee.obtenirListeLemmesMemorises(dateDetailLexique);
+		ObservableList<LemmeMemorise> obsListeOccurrences = FXCollections.observableArrayList(listeLemmesMemorises);
 
+		((TableColumn) tableLexique.getColumns().get(0)).setCellFactory(column -> {
+			return new TableCell<LemmeMemorise, Lemme>() {
+				@Override
+				protected void updateItem(Lemme item, boolean empty) {
+					super.updateItem(item, empty);
+					setAlignment(Pos.CENTER);
+					if (empty) {
+						setGraphic(null);
+					} else {
+						Rectangle rectangle = new Rectangle(0, 0, 14, 14);
+						setGraphic(rectangle);
+						rectangle.getStyleClass().add(item.lireInitiateur().lireNomClasse());
+						rectangle.getStyleClass().add("origine");
+					}
+				}
+			};
+		});
+		((TableColumn) tableLexique.getColumns().get(0))
+				.setCellValueFactory(new PropertyValueFactory<LemmeMemorise, Lemme>("lemme"));
+		((TableColumn) tableLexique.getColumns().get(1))
+				.setCellValueFactory(new PropertyValueFactory<LemmeMemorise, Lemme>("lemme"));
+		((TableColumn) tableLexique.getColumns().get(2))
+				.setCellValueFactory(new PropertyValueFactory<LemmeMemorise, Individu>("emetteur"));
+		((TableColumn) tableLexique.getColumns().get(3))
+				.setCellValueFactory(new PropertyValueFactory<LemmeMemorise, Individu>("recepteur"));
+		((TableColumn) tableLexique.getColumns().get(4))
+				.setCellValueFactory(new PropertyValueFactory<LemmeMemorise, Date>("dateMemorisation"));
+
+		tableLexique.setItems(obsListeOccurrences);
+
+		if (comparateurTableLexique == null) {
+			comparateurTableLexique = ((TableColumn) tableLexique.getColumns().get(4)).getComparator().reversed();
+		}
+		((TableColumn) tableLexique.getColumns().get(4)).setComparator(comparateurTableLexique);
+		tableLexique.getSortOrder().add(((TableColumn) tableLexique.getColumns().get(4)));
+	}
+
+	/**
+	 * Remplie la TableView tableOccurrences contenant les occurrences de lemme relatives a la portee actuelle 
+	 * selon la date, le type d'evenement et l'issue d'evenement selectionnes par l'utilisateur
+	 * 
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void remplirTableOccurrences() {
 		ArrayList<OccurrenceLemme> listeLemmesMemorises = portee.obtenirListeOccurrences(dateDetailOccurrences,	typeEvenementOccurrences, issueEvenementOccurrences);

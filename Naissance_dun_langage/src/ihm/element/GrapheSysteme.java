@@ -13,6 +13,15 @@ import javafx.scene.text.Text;
 import systeme.Systeme;
 import systeme.Voisin;
 
+/**
+ * Panel representant le systeme sous la forme d'un graphe
+ * 
+ * Chaque sommet (Circle) represente une portee, et chaque arc (Arrow) represente une relation
+ * de voisinage entre deux individus, annotee de son delais respectif
+ * 
+ * @author Charles MECHERIKI & Yongda LIN
+ *
+ */
 public class GrapheSysteme extends Pane {
 	private final int rayonSommet = 20;
 	
@@ -22,15 +31,27 @@ public class GrapheSysteme extends Pane {
 	private double theta;
 	private double rayonGraphe;
 
-	public GrapheSysteme(ArrayList<Portee> portees, double width, double height) {
+	/**
+	 * Initialise les valeurs de portees, largeur et hauteur du graphe du systeme
+	 * 
+	 * @param portees	les portees du systeme
+	 * @param largeur	la largeur pour le panel
+	 * @param hauteur	la hauteur pour le panel
+	 */
+	public GrapheSysteme(ArrayList<Portee> portees, double largeur, double hauteur) {
 		this.portees = portees;
-		this.width = width;
-		this.height = height;
+		this.width = largeur;
+		this.height = hauteur;
 		
 		theta = 2 * Math.PI / (portees.size() - 1);
-		rayonGraphe = Math.min(width / 2, height / 2);
+		rayonGraphe = Math.min(largeur / 2, hauteur / 2);
 	}
 	
+	/**
+	 * Genere les sommets du graphe (un par portee) et les renvoie
+	 * 
+	 * @return les sommets du graphe
+	 */
 	public HashMap<Portee, Circle> genererSommets() {
 		HashMap<Portee, Circle> sommets = new HashMap<Portee, Circle>();
 		
@@ -59,6 +80,11 @@ public class GrapheSysteme extends Pane {
 		return sommets;
 	}
 	
+	/**
+	 * Genere et renvoie les arcs du graphe (un par relation de voisinage)
+	 * 
+	 * @return les arcs du graphe
+	 */
 	public ArrayList<Arrow> genererArcs() {
 		ArrayList<Arrow> arcs = new ArrayList<Arrow>();
 
@@ -103,6 +129,11 @@ public class GrapheSysteme extends Pane {
 		return arcs;
 	}
 	
+	/**
+	 * Genere et renvoie les legendes associees aux sommets du graphe
+	 * 
+	 * @return les legendes associees aux sommets du graphe
+	 */
 	public ArrayList<Node> genererLegendes() {
 		ArrayList<Node> legendes = new ArrayList<Node>();
 
@@ -129,6 +160,11 @@ public class GrapheSysteme extends Pane {
 		return legendes;
 	}
 	
+	/**
+	 * Genere et renvoie les delais associes aux arcs du graphe
+	 * 
+	 * @return les delais associes aux arcs du graphe
+	 */
 	public ArrayList<Node> genererDelais() {
 		ArrayList<Node> delais = new ArrayList<Node>();
 
@@ -141,10 +177,10 @@ public class GrapheSysteme extends Pane {
 					double x1, y1, x2, y2, newX2, newY2;
 					int voisinID = voisin.obtenirIndividu().lireID();
 
-					x1 = width / 2 + (rayonGraphe - 20) * Math.cos(theta * (voisinID - 1)) - 4;
-					y1 = height / 2 + (rayonGraphe - 20) * Math.sin(theta * (voisinID - 1)) + 3;
-					x2 = width / 2 + (rayonGraphe - 20) * Math.cos(theta * (individuID - 1)) - 4;
-					y2 = height / 2 + (rayonGraphe - 20) * Math.sin(theta * (individuID - 1)) + 3;
+					x1 = width / 2 + (rayonGraphe - 20) * Math.cos(theta * (individuID - 1)) - 4;
+					y1 = height / 2 + (rayonGraphe - 20) * Math.sin(theta * (individuID - 1)) + 3;
+					x2 = width / 2 + (rayonGraphe - 20) * Math.cos(theta * (voisinID - 1)) - 4;
+					y2 = height / 2 + (rayonGraphe - 20) * Math.sin(theta * (voisinID - 1)) + 3;
 					
 					double pourcent = 0;
 					if ((individuID + 1)  % Systeme.lireNombreIndividus() == voisinID % Systeme.lireNombreIndividus()
@@ -167,7 +203,7 @@ public class GrapheSysteme extends Pane {
 					
 					Text delaisText = new Text(newX2, newY2, stringDelais);
 					delaisText.getStyleClass().add("delais");
-					delaisText.getStyleClass().add(voisin.obtenirIndividu().lireNomClasse());
+					delaisText.getStyleClass().add(porteeIndividu.obtenirIndividu().lireNomClasse());
 					
 					delais.add(delaisBackground);
 					delais.add(delaisText);

@@ -14,30 +14,36 @@ import systeme.Systeme;
 
 /**
  * Classe principale de l'application
- * Elle configure et lance le systeme, puis affiche l'IHM recapitulative
+ * 
+ * Elle recupere les differentes ressources du projet, configure le systeme,
+ * puis lance la simulation et affiche les resultats dans une IHM
  * 
  * @author Charles MECHERIKI & Yongda LIN
  *
  */
-public class Simulation extends Application
-{
+public class Simulation extends Application {
+	
 	private static final String urlConfig = "config/config.xml";
 	private static final String urlFXLM = "scene.fxml";
 	private static final String urlCSS = "scene.css";
 	private static final String urlIcon = "java-icon.png";
-	
 	private static final String titreApp = "Naissance d'un langage";
-	
+
+	/**
+	 * Methode main habituelle, pouvant prendre des arguments en parametre
+	 * Actuellement, aucun argument n'est considere
+	 * 
+	 * @param args	les arguments pour l'application
+	 */
 	public static void main(String[] args) {
 		Application.launch(args);
 	}
-	
+
 	@Override
 	public void start(Stage stage) {
 		try {
 			LecteurConfigurationSysteme lecteurConfigurationSysteme = new LecteurConfigurationSysteme();
 			ConfigurationSysteme configurationSysteme = lecteurConfigurationSysteme.lireConfigSystemeDepuisFichier(urlConfig);
-		
 			Systeme.configurer(configurationSysteme);
 			Systeme.lancer();
 			
@@ -67,7 +73,6 @@ public class Simulation extends Application
 		}
 		catch (Exception exception) {
 			System.out.println(exception.getMessage());
-			//exception.printStackTrace();
 			System.exit(1);
 		}
 	}

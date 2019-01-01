@@ -4,23 +4,32 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import evenement.enumeration.IssueEvenement;
-import evenement.enumeration.TypeEvenement;
 import ihm.bean.LemmeMemorise;
 import ihm.bean.Parametre;
-import lexique.Lemme;
-import lexique.Lexique;
-import lexique.OccurrenceLemme;
-import lexique.ComparateurOccurrenceLemmeDate;
 import systeme.Individu;
 import systeme.Systeme;
-import temps.Date;
+import systeme.evenement.enumeration.IssueEvenement;
+import systeme.evenement.enumeration.TypeEvenement;
+import systeme.lexique.ComparateurOccurrenceLemmeDate;
+import systeme.lexique.Lemme;
+import systeme.lexique.Lexique;
+import systeme.lexique.OccurrenceLemme;
+import systeme.temps.Date;
 
+/**
+ * Portee relative a l'ensemble du systeme
+ * 
+ * Dans la plupart des cas, les donnees recuperees correspondent a la sommes des donnees
+ * de chaque individu
+ * 
+ * @author Charles MECHERIKI & Yongda LIN
+ *
+ */
 public class PorteeSysteme extends Portee {
 
 	@Override
 	public String toString() {
-		return "Système";
+		return "Systeme";
 	}
 
 	@Override
@@ -90,14 +99,14 @@ public class PorteeSysteme extends Portee {
 		ArrayList<Parametre> listeParametres = new ArrayList<Parametre>();
 		
 		listeParametres.add(new Parametre("NombreIndividus", String.valueOf(Systeme.lireNombreIndividus())));
-		listeParametres.add(new Parametre("TailleLexiqueInitialeParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().getTailleInitialeLexiqueParDefaut())));
-		listeParametres.add(new Parametre("TailleLexiqueMaximaleParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().getTailleMaximaleLexiqueParDefaut())));
-		listeParametres.add(new Parametre("ImplementationConditionEmissionParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().getImplConditionEmissionParDefaut())));
-		listeParametres.add(new Parametre("ImplementationConditionReceptionParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().getImplConditionReceptionParDefaut())));
-		listeParametres.add(new Parametre("ImplementationConditionMemorisationParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().getImplConditionMemorisationParDefaut())));
-		listeParametres.add(new Parametre("ImplementationStrategieSelectionEmissionParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().getImplStrategieSelectionEmissionParDefaut())));
-		listeParametres.add(new Parametre("ImplementationStrategieSelectionEliminationParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().getImplStrategieSelectionEliminationParDefaut())));
-		listeParametres.add(new Parametre("ImplementationStrategieSuccessionParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().getImplStrategieSuccessionParDefaut())));
+		listeParametres.add(new Parametre("TailleLexiqueInitialeParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().lireTailleInitialeLexiqueParDefaut())));
+		listeParametres.add(new Parametre("TailleLexiqueMaximaleParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().lireTailleMaximaleLexiqueParDefaut())));
+		listeParametres.add(new Parametre("ImplementationConditionEmissionParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().lireImplConditionEmissionParDefaut())));
+		listeParametres.add(new Parametre("ImplementationConditionReceptionParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().lireImplConditionReceptionParDefaut())));
+		listeParametres.add(new Parametre("ImplementationConditionMemorisationParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().lireImplConditionMemorisationParDefaut())));
+		listeParametres.add(new Parametre("ImplementationStrategieSelectionEmissionParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().lireImplStrategieSelectionEmissionParDefaut())));
+		listeParametres.add(new Parametre("ImplementationStrategieSelectionEliminationParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().lireImplStrategieSelectionEliminationParDefaut())));
+		listeParametres.add(new Parametre("ImplementationStrategieSuccessionParDefaut", String.valueOf(Systeme.obtenirConfigurationSysteme().lireImplStrategieSuccessionParDefaut())));
 		listeParametres.add(new Parametre("TypeCritereArret", String.valueOf(Systeme.lireTypeCritereArret())));		
 		listeParametres.add(new Parametre("ObjectifCritereArret", String.valueOf(Systeme.lireObjectifCritereArret())));
 		

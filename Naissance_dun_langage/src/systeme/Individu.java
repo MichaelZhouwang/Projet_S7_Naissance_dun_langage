@@ -1,20 +1,31 @@
 package systeme;
 
-import java.text.Normalizer;
 import java.util.ArrayList;
 
 import condition.enumeration.ImplementationCondition;
-import evenement.enumeration.IssueEvenement;
-import evenement.enumeration.TypeEvenement;
-import lexique.Lemme;
-import lexique.Lexique;
-import lexique.OccurrenceLemme;
-import lexique.TableOccurrencesLemmes;
 import strategie.enumeration.ImplementationStrategieSelection;
-import strategie.enumeration.ImplementationStrategieSuccession;
-import systeme.executeur.ExecuteurEvenementsIndividu;
-import temps.Date;
+import strategie.enumeration.ImplentationStrategieSuccession;
+import systeme.evenement.enumeration.IssueEvenement;
+import systeme.evenement.enumeration.TypeEvenement;
+import systeme.evenement.executeur.ExecuteurEvenementsIndividu;
+import systeme.lexique.Lemme;
+import systeme.lexique.Lexique;
+import systeme.lexique.OccurrenceLemme;
+import systeme.lexique.TableOccurrencesLemmes;
+import systeme.temps.Date;
 
+/**
+ * Un individu du systeme
+ * 
+ * Chaque individu est identifie par une lettre, possede un lexique, des voisins et ses propres 
+ * implementations de conditions et strategies
+ * 
+ * Les evenements relatifs a un individu (emission / reception / memorisation / elimination de lemme) sont geres 
+ * par un executeur, qui se charge egalement de remplir une table d'occurrences de lemmes
+ * 
+ * @author Charles MECHERIKI & Yongda LIN
+ *
+ */
 public class Individu {
 	private static int compteur = 0;
 	private int ID;
@@ -24,7 +35,7 @@ public class Individu {
 	private TableOccurrencesLemmes tableOccurrencesLemmes;
 	private ArrayList<Voisin> voisins;
 	
-	private ExecuteurEvenementsIndividu evenements;
+	private ExecuteurEvenementsIndividu executeurEvenements;
 	
 	private ImplementationCondition implConditionEmission;
 	private ImplementationCondition implConditionReception;
@@ -32,60 +43,122 @@ public class Individu {
 	
 	private ImplementationStrategieSelection implStrategieSelectionEmission;
 	private ImplementationStrategieSelection implStrategieSelectionElimination;
-	private ImplementationStrategieSuccession implStrategieSuccession;
+	private ImplentationStrategieSuccession implStrategieSuccession;
 	
-	public Individu() {
-		ID = ++compteur;
-		lettre = (char)(64 + ID);
+	/**
+	 * Cree un individu et initialise ses implementations de condition et strategies
+	 * 
+	 * @param implConditionEmission					la condition d'emission de l'individu
+	 * @param implConditionReception				la condition de reception de l'individu
+	 * @param implConditionMemorisation				la condition de memorisation de l'individu
+	 * @param implStrategieSelectionEmission		la strategie de selection de lemme pour emission de l'individu
+	 * @param implStrategieSelectionElimination		la strategie de selection de lemme pour elimination de l'individu
+	 * @param implStrategieSuccession				la strategie de succession de l'individu
+	 */
+	public Individu(ImplementationCondition implConditionEmission,
+			ImplementationCondition implConditionReception,
+			ImplementationCondition implConditionMemorisation,
+			ImplementationStrategieSelection implStrategieSelectionEmission,
+			ImplementationStrategieSelection implStrategieSelectionElimination,
+			ImplentationStrategieSuccession implStrategieSuccession) {
+		this.ID = ++compteur;
+		this.lettre = (char)(64 + ID);
 
-		lexique = new Lexique();
-		tableOccurrencesLemmes = new TableOccurrencesLemmes();
-		voisins = new ArrayList<Voisin>();
+		this.lexique = new Lexique();
+		this.tableOccurrencesLemmes = new TableOccurrencesLemmes();
+		this.voisins = new ArrayList<Voisin>();
 
-		evenements = new ExecuteurEvenementsIndividu(this);
+		this.executeurEvenements = new ExecuteurEvenementsIndividu(this);
+		
+		this.implConditionEmission = implConditionEmission;
+		this.implConditionReception = implConditionReception;
+		this.implConditionMemorisation = implConditionMemorisation;
+		this.implStrategieSelectionEmission = implStrategieSelectionEmission;
+		this.implStrategieSelectionElimination = implStrategieSelectionElimination;
+		this.implStrategieSuccession = implStrategieSuccession;
 	}
-	
-	// toString
-	
+
 	@Override
 	public String toString() {
 		return "Individu " + lettre;
 	}
 	
+	/**
+	 * Renvoie le nom de classe pour l'individu
+	 * 
+	 * @return le nom de classe pour l'individu
+	 */
 	public String lireNomClasse() {
-		return Normalizer.normalize(toString().replace(' ', '-').toLowerCase(), Normalizer.Form.NFD);
+		return toString().replace(' ', '-').toLowerCase();
 	}
-	
-	// ID
-	
+
+	/**
+	 * Renvoie l'ID de l'individu
+	 * 
+	 * @return l'ID de l'individu
+	 */
 	public int lireID() {
 		return ID;
 	}
 
-	// Lettre
-	
+	/**
+	 * Renvoie la lettre de l'individu
+	 * 
+	 * @return la lettre de l'individu
+	 */
 	public char lireLettre() {
 		return lettre;
 	}
-	
-	// Lexique
-	
-	public void genererLexique(int tailleInitiale, int tailleMaximale) {
-		lexique.generer(tailleInitiale, tailleMaximale, this);
-	}
-	
+
+	/**
+	 * Renvoie la table des coccurrences de lemmes de l'individu
+	 * 
+	 * @return la table des coccurrences de lemmes de l'individu
+	 */
 	public TableOccurrencesLemmes obtenirTableOccurrencesLemmes() {
 		return tableOccurrencesLemmes;
 	}
-	
+
+	/**
+	 * Genere une nouvelle occurrence de lemme selon le contexte (type / issue d'evenement, date, etc.)
+	 * 
+	 * @param occurrenceInitiatrice	l'occurrence	l'occurrence initiatrice de l'occurrence courante (typiquement, celle de l'ev. initiateur)
+	 * @param lemme									le lemme a l'origine de l'occurrence
+	 * @param typeEvenement							le type de l'evenement a l'origine de l'occurrence
+	 * @param issueEvenement						l'issue de l'evenement a l'origine de l'occurrence
+	 * @param date									la date de l'occurrence
+	 * @return										l'occurrence creee
+	 */
 	public OccurrenceLemme nouvelleOccurrenceLemme(OccurrenceLemme occurrenceInitiatrice, Lemme lemme, TypeEvenement typeEvenement, IssueEvenement issueEvenement, Date date) {
 		return tableOccurrencesLemmes.nouvelleOccurenceLemme(occurrenceInitiatrice, this, lemme, typeEvenement, issueEvenement, date);
 	}
 	
+	/**
+	 * Genere le lexique de l'individu - cf. la classe Lexique pour l'implementation - 
+	 * selon une taille initiale et maximale
+	 * 
+	 * @param tailleInitiale	la taille initiale pour le lexique
+	 * @param tailleMaximale	la taille maximale pour le lexique
+	 */
+	public void genererLexique(int tailleInitiale, int tailleMaximale) {
+		lexique.generer(tailleInitiale, tailleMaximale, this);
+	}
+	
+	/**
+	 * Renvoie le lexique de l'individu
+	 * 
+	 * @return le lexique de l'individu
+	 */
 	public Lexique obtenirLexique() {
 		return lexique;
 	}
 	
+	/**
+	 * Recree le lexique de l'individu comme il se trouvait a la date donnee
+	 * 
+	 * @param date	la date du lexique a recreer
+	 * @return		le lexique de l'individu comme il se trouvait a la date donnee
+	 */
 	public Lexique retrouverLexique(Date date) {
 		Lexique lexiqueRetrouve = new Lexique();
 		lexiqueRetrouve.generer(obtenirLexique().lireTailleInitiale(), obtenirLexique().lireTailleMaximale(), this);
@@ -105,91 +178,124 @@ public class Individu {
 
 		return lexiqueRetrouve;
 	}
-	
-	public int lireTailleLexique() {
-		return lexique.size();
-	}
-	
+
+	/**
+	 * Renvoie true si le lexique de l'individu est plein, sinon false
+	 * 
+	 * @return true si le lexique de l'individu est plein, sinon false
+	 */
 	public boolean aLexiquePlein() {
 		return lexique.estPlein();
 	}
 	
+	/**
+	 * Renvoie true si l'individu possede le lemme donne dans son lexique, sinon false
+	 * 
+	 * @param lemme		le lemme a verifier
+	 * @return			true si l'individu possede le lemme donne dans son lexique, sinon false
+	 */
 	public boolean connaitLemme(Lemme lemme) {
 		return lexique.contains(lemme);
 	}
 	
+	/**
+	 * Ajoute le lemme donne au lexique de l'individu
+	 * 
+	 * @param lemme		le lemme a ajouter au lexique de l'indivdu
+	 */
 	public void memoriserLemme(Lemme lemme) {
 		lexique.add(lemme);
 	}
 	
+	/**
+	 * Remplace le lemme lemmeARemplacer du lexique de l'individu par le lemme nouveauLemme
+	 * 
+	 * @param lemmeARemplacer	lemme a remplacer dans le lexique de l'individu
+	 * @param nouveauLemme		lemme prenant place dans le lexique de l'individu
+	 */
 	public void remplacerLemme(Lemme lemmeARemplacer, Lemme nouveauLemme) {
 		if (lexique.remove(lemmeARemplacer)) {
 			lexique.add(nouveauLemme);
 		}
 	}
 	
-	public ExecuteurEvenementsIndividu obtenirEvenements() {
-		return evenements;
+	/**
+	 * Renvoie l'executeur d'evenements de l'individu
+	 * 
+	 * @return l'executeur d'evenements de l'individu
+	 */
+	public ExecuteurEvenementsIndividu obtenirExecuteurEvenements() {
+		return executeurEvenements;
 	}
-	
-	// Conditions
-	
+
+	/**
+	 * Renvoie l'implementation de condition d'emission de l'individu
+	 * 
+	 * @return l'implementation de condition d'emission de l'individu
+	 */
 	public ImplementationCondition lireImplConditionEmission() {
 		return implConditionEmission;
 	}
 	
-	public void definirImplConditionEmission(ImplementationCondition impl) {
-		implConditionEmission = impl;
-	}
-	
+	/**
+	 * Renvoie l'implementation de condition de reception de l'individu
+	 * 
+	 * @return l'implementation de condition de reception de l'individu
+	 */
 	public ImplementationCondition lireImplConditionReception() {
 		return implConditionReception;
 	}
 	
-	public void definirImplConditionReception(ImplementationCondition impl) {
-		implConditionReception = impl;
-	}
-	
+	/**
+	 * Renvoie l'implementation de condition de memorisation de l'individu
+	 * 
+	 * @return l'implementation de condition de memorisation de l'individu
+	 */
 	public ImplementationCondition lireImplConditionMemorisation() {
 		return implConditionMemorisation;
 	}
 	
-	public void definirImplConditionMemorisation(ImplementationCondition impl) {
-		implConditionMemorisation = impl;
-	}
-	
-	// Stratégies
-	
+	/**
+	 * Renvoie l'implementation de strategie de selection de lemme pour emission de l'individu
+	 * 
+	 * @return l'implementation de strategie de selection de lemme pour emission de l'individu
+	 */
 	public ImplementationStrategieSelection lireImplStrategieSelectionEmission() {
 		return implStrategieSelectionEmission;
 	}
 	
-	public void definirImplStrategieSelectionEmission(ImplementationStrategieSelection impl) {
-		implStrategieSelectionEmission = impl;
-	}
-	
+	/**
+	 * Renvoie l'implementation de strategie de selection de lemme pour elimination de l'individu
+	 * 
+	 * @return l'implementation de strategie de selection de lemme pour elimination de l'individu
+	 */
 	public ImplementationStrategieSelection lireImplStrategieSelectionElimination() {
 		return implStrategieSelectionElimination;
 	}
 	
-	public void definirImplStrategieSelectionElimination(ImplementationStrategieSelection impl) {
-		implStrategieSelectionElimination = impl;
-	}
-	
-	public void definirImplStrategieSuccession(ImplementationStrategieSuccession impl) {
-		implStrategieSuccession = impl;
-	}
-	
-	public ImplementationStrategieSuccession lireImplStrategieSuccession() {
+	/**
+	 * Renvoie la strategie de succession de l'individu
+	 * 
+	 * @return la strategie de succession de l'individu
+	 */
+	public ImplentationStrategieSuccession lireImplStrategieSuccession() {
 		return implStrategieSuccession;
 	}
-	
-	// Voisins
-	
+
+	/**
+	 * Ajoute le voisin donne comme voisin de l'individu
+	 * 
+	 * @param voisin	le voisin a ajouter a l'individu
+	 */
 	public void ajouterVoisin(Voisin voisin) {
 		voisins.add(voisin);
 	}
 	
+	/**
+	 * Renvoie les voisins de l'individu
+	 * 
+	 * @return les voisins de l'individu
+	 */
 	public ArrayList<Voisin> obtenirVoisins() {
 		return voisins;
 	}
