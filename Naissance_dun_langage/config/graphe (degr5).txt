@@ -1,0 +1,17 @@
+# Matrice de voisinage
+#
+# Cycliques 8
+# Degre 5
+# http://graphonline.ru/en/home?graph=NWutmLyIDUpJlIVH
+#
+0 1 0 1 1 0 1 1 
+1 0 1 0 0 1 1 1 
+0 1 0 1 1 1 0 1 
+1 0 1 0 1 1 1 0 
+1 0 1 1 0 1 1 0 
+0 1 1 1 1 0 0 1 
+1 1 0 1 1 0 0 1 
+1 1 1 0 0 1 1 0 
+
+ 
+

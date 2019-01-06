@@ -1,0 +1,21 @@
+# Matrice de voisinage
+#
+# Multipolaires 9
+# http://graphonline.ru/en/home?graph=YxNhbfIicqcYjgAc
+#
+0 1 1 1 0 1 0 0 0 
+1 0 0 0 0 0 0 0 0 
+1 0 0 0 0 0 0 0 0 
+1 0 0 0 0 0 0 1 0 
+0 0 0 0 0 0 0 0 1 
+1 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 1 
+0 0 0 1 0 0 0 0 1 
+0 0 0 0 1 0 1 1 0 
+ 
+
+
+ 
+
+ 
+

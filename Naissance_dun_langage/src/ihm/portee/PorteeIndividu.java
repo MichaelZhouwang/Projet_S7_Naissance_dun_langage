@@ -4,23 +4,33 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import beans.LemmeMemorise;
-import beans.Parametre;
-import evenement.enumeration.IssueEvenement;
-import evenement.enumeration.TypeEvenement;
-import lexique.Lemme;
-import lexique.Lexique;
-import lexique.OccurrenceLemme;
-import lexique.ComparateurOccurrenceLemmeDate;
+import ihm.bean.LemmeMemorise;
+import ihm.bean.Parametre;
 import systeme.Individu;
 import systeme.Systeme;
-import temps.Date;
+import systeme.evenement.enumeration.IssueEvenement;
+import systeme.evenement.enumeration.TypeEvenement;
+import systeme.lexique.ComparateurOccurrenceLemmeDate;
+import systeme.lexique.Lemme;
+import systeme.lexique.Lexique;
+import systeme.lexique.OccurrenceLemme;
+import systeme.temps.Date;
 
+/**
+ * Portee relative a un individu
+ * 
+ * @author Charles MECHERIKI & Yongda LIN
+ *
+ */
 public class PorteeIndividu extends Portee {
 	private Individu individu;
 	
 	public PorteeIndividu(Individu individu) {
 		this.individu = individu;
+	}
+	
+	public Individu obtenirIndividu() {
+		return individu;
 	}
 	
 	@Override
@@ -47,7 +57,7 @@ public class PorteeIndividu extends Portee {
 	@Override
 	public ArrayList<LemmeMemorise> obtenirListeLemmesMemorises(Date date) {
 		ArrayList<OccurrenceLemme> listeOccurrences = new ArrayList<OccurrenceLemme>();
-		HashMap<Lemme, LemmeMemorise> tableLemmesMemorises = new HashMap<Lemme, LemmeMemorise>();
+		HashMap<Integer, LemmeMemorise> tableLemmesMemorises = new HashMap<Integer, LemmeMemorise>();
 		
 		listeOccurrences.addAll(individu.obtenirTableOccurrencesLemmes().obtenirListeOccurrencesLemmes(Lemme.QUELCONQUE, TypeEvenement.MEMORISATION, IssueEvenement.SUCCES, Date.valeurInitiale, date));
 		listeOccurrences.addAll(individu.obtenirTableOccurrencesLemmes().obtenirListeOccurrencesLemmes(Lemme.QUELCONQUE, TypeEvenement.ELIMINATION, IssueEvenement.SUCCES, Date.valeurInitiale, date));
@@ -55,24 +65,23 @@ public class PorteeIndividu extends Portee {
 		Collections.sort(listeOccurrences, new ComparateurOccurrenceLemmeDate());
 		
 		Lexique lexique = new Lexique();
-		lexique.generer(individu.obtenirLexique().lireTailleMaximale(), individu.obtenirLexique().lireTailleInitiale(), individu);
+		lexique.generer(individu.obtenirLexique().lireTailleInitiale(), individu.obtenirLexique().lireTailleMaximale(), individu);
 
 		for (Lemme _lemme : lexique) {
-			tableLemmesMemorises.put(_lemme, new LemmeMemorise(individu, individu, _lemme, Date.valeurInitiale));
+			tableLemmesMemorises.put(_lemme.hashCode(), new LemmeMemorise(individu, individu, _lemme, Date.valeurInitiale));
 		}
-		
+
 		for (OccurrenceLemme occurrence : listeOccurrences) {
-			Lemme lemme = occurrence.lireLemme();
-			switch (occurrence.lireTypeEvenement()) {
+			Lemme lemme = occurrence.getLemme();
+			switch (occurrence.getTypeEvenement()) {
 				case MEMORISATION:
-					Individu initiateur = occurrence.lireLemme().lireInitiateur();
-					Individu emetteur = occurrence.lireOccurrenceInitiatrice().lireOccurrenceInitiatrice().lireIndividu();
-					Individu recepteur = occurrence.lireIndividu();
-					Date dateMemorisation = occurrence.lireDate();
-					tableLemmesMemorises.put(lemme, new LemmeMemorise(emetteur, recepteur, lemme, dateMemorisation));
+					Individu emetteur = occurrence.getOccurrenceInitiatrice().getOccurrenceInitiatrice().getIndividu();
+					Individu recepteur = occurrence.getIndividu();
+					Date dateMemorisation = occurrence.getDate();
+					tableLemmesMemorises.put(lemme.hashCode(), new LemmeMemorise(emetteur, recepteur, lemme, dateMemorisation));
 					break;
-				case ELIMINATION :
-					tableLemmesMemorises.remove(lemme);
+				case ELIMINATION:
+					tableLemmesMemorises.remove(lemme.hashCode());
 					break;
 				default:
 					break;
@@ -86,14 +95,15 @@ public class PorteeIndividu extends Portee {
 	public ArrayList<Parametre> obtenirListeParametres() {
 		ArrayList<Parametre> listeParametres = new ArrayList<Parametre>();
 
+		listeParametres.add(new Parametre("ID", String.valueOf(individu.lireID())));
 		listeParametres.add(new Parametre("TailleLexiqueInitiale", String.valueOf(individu.obtenirLexique().lireTailleInitiale())));
 		listeParametres.add(new Parametre("TailleLexiqueMaximale", String.valueOf(individu.obtenirLexique().lireTailleMaximale())));
-		listeParametres.add(new Parametre("ImplementationConditionEmission", String.valueOf(individu.lireImplementationConditionEmission())));
-		listeParametres.add(new Parametre("ImplementationConditionReception", String.valueOf(individu.lireImplementationConditionReception())));
-		listeParametres.add(new Parametre("ImplementationConditionMemorisation", String.valueOf(individu.lireImplementationConditionMemorisation())));
-		listeParametres.add(new Parametre("ImplementationStrategieSelectionEmission", String.valueOf(individu.lireImplementationStrategieSelectionEmission())));
-		listeParametres.add(new Parametre("ImplementationStrategieSelectionElimination", String.valueOf(individu.lireImplementationStrategieSelectionElimination())));
-		listeParametres.add(new Parametre("ImplementationStrategieSuccession", String.valueOf(individu.lireImplementationStrategieSuccession())));
+		listeParametres.add(new Parametre("ImplementationConditionEmission", String.valueOf(individu.lireImplConditionEmission())));
+		listeParametres.add(new Parametre("ImplementationConditionReception", String.valueOf(individu.lireImplConditionReception())));
+		listeParametres.add(new Parametre("ImplementationConditionMemorisation", String.valueOf(individu.lireImplConditionMemorisation())));
+		listeParametres.add(new Parametre("ImplementationStrategieSelectionEmission", String.valueOf(individu.lireImplStrategieSelectionEmission())));
+		listeParametres.add(new Parametre("ImplementationStrategieSelectionElimination", String.valueOf(individu.lireImplStrategieSelectionElimination())));
+		listeParametres.add(new Parametre("ImplementationStrategieSuccession", String.valueOf(individu.lireImplStrategieSuccession())));
 		
 		return listeParametres;
 	}
@@ -110,7 +120,6 @@ public class PorteeIndividu extends Portee {
 			for (Individu individu : Systeme.obtenirIndividus()) {
 				repartitionDateCourante.put(individu, 0);
 			}
-
 			for (Lemme lemme : individu.retrouverLexique(date)) {
 				Individu _individu = lemme.lireInitiateur();
 				repartitionDateCourante.put(_individu, repartitionDateCourante.get(_individu) + 1);
@@ -121,33 +130,33 @@ public class PorteeIndividu extends Portee {
 	}
 
 	@Override
-	public HashMap<Date, HashMap<Individu, Integer>> obtenirDonneesDiagrammeEvolutionOccurrences(ArrayList<Date> datesRepere, TypeEvenement typeEvenement) {
-		ArrayList<OccurrenceLemme> occurrences = new ArrayList<OccurrenceLemme>();
+	public HashMap<Date, HashMap<Individu, Integer>> obtenirDonneesDiagrammeEvolutionOccurrences(ArrayList<Date> datesRepere, TypeEvenement typeEvenement, IssueEvenement issueEvenement) {
+		ArrayList<OccurrenceLemme> listeOccurrences = new ArrayList<OccurrenceLemme>();
 		HashMap<Date, HashMap<Individu, Integer>> donnees = new HashMap<Date, HashMap<Individu, Integer>>();
 
 		for (Date date : datesRepere) {
-			donnees.put(date, new HashMap<Individu, Integer>());
-			HashMap<Individu, Integer> donneesDateCourante = donnees.get(date);
+			HashMap<Individu, Integer> donneesDateCourante = new HashMap<Individu, Integer>();
+			donnees.put(date, donneesDateCourante);
 			
 			for (Individu individu : Systeme.obtenirIndividus()) {
 				donneesDateCourante.put(individu, 0);
 			}
 
-			occurrences = individu.obtenirTableOccurrencesLemmes().obtenirListeOccurrencesLemmes(Lemme.QUELCONQUE, typeEvenement, IssueEvenement.QUELCONQUE, Date.valeurInitiale, date);
+			listeOccurrences = individu.obtenirTableOccurrencesLemmes().obtenirListeOccurrencesLemmes(Lemme.QUELCONQUE, typeEvenement, issueEvenement, Date.valeurInitiale, date);
 			
-			for (OccurrenceLemme occurrenceLemme : occurrences) {
-				donneesDateCourante.put(occurrenceLemme.lireLemme().lireInitiateur(), donneesDateCourante.get(occurrenceLemme.lireLemme().lireInitiateur()) + 1);
+			for (OccurrenceLemme occurrence : listeOccurrences) {
+				donneesDateCourante.put(occurrence.getLemme().lireInitiateur(), donneesDateCourante.get(occurrence.getLemme().lireInitiateur()) + 1);
 			}
 		}
 		
 		return donnees;
 	}
-	
+
 	@Override
-	public ArrayList<OccurrenceLemme> obtenirListeOccurrences(Date date, TypeEvenement typeEvenement) {
+	public ArrayList<OccurrenceLemme> obtenirListeOccurrences(Date date, TypeEvenement typeEvenement, IssueEvenement issueEvenement) {
 		ArrayList<OccurrenceLemme> listeOccurrences = new ArrayList<OccurrenceLemme>();
 		
-		listeOccurrences = individu.obtenirTableOccurrencesLemmes().obtenirListeOccurrencesLemmesOrdonnee(Lemme.QUELCONQUE, typeEvenement, IssueEvenement.QUELCONQUE, Date.valeurInitiale, date);
+		listeOccurrences = individu.obtenirTableOccurrencesLemmes().obtenirListeOccurrencesLemmesOrdonnee(Lemme.QUELCONQUE, typeEvenement, issueEvenement, Date.valeurInitiale, date);
 
 		return listeOccurrences;
 	}

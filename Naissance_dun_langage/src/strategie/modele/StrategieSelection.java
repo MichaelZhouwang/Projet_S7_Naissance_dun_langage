@@ -1,43 +1,91 @@
 package strategie.modele;
 
-import lexique.Lemme;
+import exception.StrategieException;
 import strategie.enumeration.ImplementationStrategieSelection;
-import strategie.implementation.StrategieSelectionAleatoire;
-import strategie.implementation.StrategieSelectionMoinsEmis;
-import strategie.implementation.StrategieSelectionPremier;
+import strategie.implementation.ImplStrategieSelectionLemmeAleatoire;
+import strategie.implementation.ImplStrategieSelectionLemmeMoinsEmis;
+import strategie.implementation.ImplStrategieSelectionPremierLemme;
 import systeme.Individu;
+import systeme.lexique.Lemme;
 
+/**
+ * Classe abstraite representant une strategie de selection pour l'emission / l'elimination de lemme selon un Individu (cas d'emission) ou un couple 
+ * (Individu, Lemme) (cas d'elimination)
+ * 
+ * Pour chaque nouvelle implementation concrete, veiller a ajouter au switch une valeur correspondante dans executerImplementation() 
+ * ainsi qu'une variable static
+ * 
+ * @author Charles MECHERIKI & Yongda LIN
+ *
+ */
 public abstract class StrategieSelection {
-	protected abstract Lemme selectionnerLemme(Individu individuCourant, Lemme lemmeCourant);
+	private final static ImplStrategieSelectionLemmeAleatoire strategieSelectionLemmeAleatoire = new ImplStrategieSelectionLemmeAleatoire();
+	private final static ImplStrategieSelectionPremierLemme strategieSelectionPremierLemme = new ImplStrategieSelectionPremierLemme();
+	private final static ImplStrategieSelectionLemmeMoinsEmis strategieSelectionLemmeMoinsEmis = new ImplStrategieSelectionLemmeMoinsEmis();
 
-	public static Lemme executerImplementationEmission(Individu individuCourant) {
-		return executerImplementation(individuCourant.lireImplementationStrategieSelectionEmission(), individuCourant, null);
+	/**
+	 * Execute l'implementation de la strategie de selection pour emission de l'individu passe en parametre
+	 * 
+	 * @param individuCourant		l'individu courant
+	 * @return						le lemme selectionne
+	 * @throws StrategieException	si l'implementation a provoquee une exception
+	 */
+	public static Lemme executerImplEmission(Individu individuCourant) throws StrategieException {
+		return executerImpl(individuCourant.lireImplStrategieSelectionEmission(), individuCourant, null);
 	}
 	
-	public static Lemme executerImplementationElimination(Individu individuCourant, Lemme lemmeCourant) {
-		return executerImplementation(individuCourant.lireImplementationStrategieSelectionElimination(), individuCourant, lemmeCourant);
+	/**
+	 * Execute l'implementation de la strategie de selection pour elimination pour le lemme et l'individu passes en parametre
+	 * 
+	 * @param individuCourant		l'individu courant
+	 * @param lemmeCourant			le lemme en memorisation
+	 * @return						le lemme selectionne
+	 * @throws StrategieException	si l'implementation a provoquee une exception
+	 */
+	public static Lemme executerImplElimination(Individu individuCourant, Lemme lemmeCourant) throws StrategieException {
+		return executerImpl(individuCourant.lireImplStrategieSelectionElimination(), individuCourant, lemmeCourant);
 	}
-	
-	public static Lemme executerImplementation(ImplementationStrategieSelection implementation, Individu individuCourant, Lemme lemmeCourant) {
-		
+
+	/**
+	 * Execute l'implementation de la strategie de selection passee en parametre avec le contexte donne
+	 * 
+	 * @param impl					l'implementation a considerer
+	 * @param individuCourant		l'individu courant
+	 * @param lemmeCourant			le lemme courant (en memorisation dans le cas d'elimination)
+	 * @return						le lemme selectionne
+	 * @throws StrategieException	si l'implementation a provoquee une exception
+	 */
+	private static Lemme executerImpl(ImplementationStrategieSelection impl, Individu individuCourant, Lemme lemmeCourant) throws StrategieException {
 		StrategieSelection strategie = null;
-		
-		switch (implementation) {
-			case SELECTION_ALEATOIRE:
-				strategie = strategieSelectionAleatoire;
+
+		switch (impl) {
+			case SELECTION_LEMME_ALEATOIRE:
+				strategie = strategieSelectionLemmeAleatoire;
 				break;
-			case SELECTION_PREMIER:
-				strategie = strategieSelectionPremier;
+			case SELECTION_PREMIER_LEMME:
+				strategie = strategieSelectionPremierLemme;
 				break;
-			case SELECTION_MOINS_EMIS:
-				strategie = strategieSelectionMoinsEmis;
+			case SELECTION_LEMME_MOINS_EMIS:
+				strategie = strategieSelectionLemmeMoinsEmis;
 				break;
+			default:
+				throw new StrategieException("L'implementation de strategie '" + impl + "' n'est associee a aucune classe concrete (switch incomplet)", null);
 		}
 		
-		return strategie.selectionnerLemme(individuCourant, lemmeCourant);
+		try {
+			return strategie.selectionnerLemme(individuCourant, lemmeCourant);
+		}
+		catch (Exception exception) {
+			throw new StrategieException("Strategie '" + impl + "' a provoquee une exception lors de son execution (contexte incoherent ?)", exception);
+		}
 	}
 	
-	private final static StrategieSelectionAleatoire strategieSelectionAleatoire = new StrategieSelectionAleatoire();
-	private final static StrategieSelectionPremier strategieSelectionPremier = new StrategieSelectionPremier();
-	private final static StrategieSelectionMoinsEmis strategieSelectionMoinsEmis = new StrategieSelectionMoinsEmis();
+	/**
+	 * Methode a implementer, representant une strategie de selection de lemme sur un couple (Individu, Lemme) passe en parametre
+	 * 
+	 * @param individuCourant	l'individu courant
+	 * @param lemmeCourant		le lemme courant (en memorisation dans le cas d'elimination)
+	 * @return					le lemme selectionne
+	 */
+	protected abstract Lemme selectionnerLemme(Individu individuCourant, Lemme lemmeCourant);
 }

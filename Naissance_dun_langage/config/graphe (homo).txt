@@ -1,0 +1,16 @@
+# Matrice de voisinage
+#
+# Homogènes 9
+# http://graphonline.ru/en/home?graph=EVLnGbBsRjdzLIgW
+#
+0 1 0 1 0 0 0 0 0 
+1 0 1 0 1 0 0 0 0 
+0 1 0 0 0 1 0 0 0 
+1 0 0 0 1 0 1 0 0 
+0 1 0 1 0 1 0 1 0 
+0 0 1 0 1 0 0 0 1 
+0 0 0 1 0 0 0 1 0 
+0 0 0 0 1 0 1 0 1 
+0 0 0 0 0 1 0 1 0 
+ 
+

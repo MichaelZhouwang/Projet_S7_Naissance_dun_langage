@@ -24,23 +24,13 @@
    <left>
       <VBox prefHeight="450.0" prefWidth="510.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <HBox maxHeight="49.0" minWidth="-Infinity" prefHeight="49.0" prefWidth="420.0" spacing="20.0">
-               <children>
-                  <Label text="Portée considérée" />
-                  <Region prefHeight="25.0" prefWidth="244.0" HBox.hgrow="ALWAYS" />
-                  <ChoiceBox fx:id="choixPortee" />
-               </children>
-               <padding>
-                  <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
-               </padding>
-            </HBox>
             <TabPane prefHeight="562.0" prefWidth="350.0" styleClass="medium-tab-pane" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab text="Lexique">
                   <content>
                     <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="284.0" prefWidth="350.0">
                            <children>
-                              <PieChart fx:id="diagrammeLexique" animated="false" layoutX="7.0" layoutY="14.0" prefHeight="320.0" prefWidth="444.0" startAngle="90.0" />
+                              <PieChart fx:id="diagrammeLexique" animated="false" layoutX="7.0" layoutY="14.0" prefHeight="380.0" prefWidth="490.0" startAngle="90.0" />
                            </children>
                         </AnchorPane>
                   </content>
@@ -49,9 +39,9 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <ScrollPane hbarPolicy="NEVER" layoutY="16.0" prefHeight="325.0" prefWidth="495.0">
+                              <ScrollPane hbarPolicy="NEVER" layoutY="16.0" prefHeight="380.0" prefWidth="495.0">
                                  <content>
-                                    <TextFlow fx:id="texteEvenements" prefHeight="325.0" prefWidth="495.0" />
+                                    <TextFlow fx:id="texteEvenements" prefHeight="380.0" prefWidth="495.0" />
                                  </content>
                               </ScrollPane>
                            </children></AnchorPane>
@@ -61,7 +51,7 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <TableView fx:id="tableParametres" layoutX="2.0" layoutY="16.0" prefHeight="325.0" prefWidth="495.0">
+                              <TableView fx:id="tableParametres" layoutX="2.0" layoutY="16.0" prefHeight="380.0" prefWidth="495.0">
                                  <columns>
                                     <TableColumn prefWidth="260.0" text="Nom" />
                                     <TableColumn prefWidth="234.0" text="Valeur" />
@@ -91,26 +81,30 @@
                      <content>
                         <AnchorPane minHeight="-Infinity" minWidth="-Infinity">
                            <children>
-                              <StackedBarChart fx:id="diagrammeEvolutionLexique" animated="false" layoutX="534.0" layoutY="11.0" legendSide="LEFT" prefHeight="290.0" prefWidth="720.0">
-                                 <xAxis>
-                                    <CategoryAxis side="BOTTOM" />
-                                 </xAxis>
-                                 <yAxis>
-                                    <NumberAxis prefHeight="263.0" prefWidth="55.0" side="LEFT" />
-                                 </yAxis>
-                                 <padding>
-                                    <Insets left="32.0" />
-                                 </padding>
-                              </StackedBarChart>
+                              <Pane fx:id="conteneurDiagrammeEvolutionLexique" layoutX="534.0" layoutY="11.0" prefHeight="290.0" prefWidth="720.0">
+                                 <children>
+                                    <StackedBarChart fx:id="diagrammeEvolutionLexique" animated="false" legendSide="LEFT" prefHeight="290.0" prefWidth="720.0">
+                                       <xAxis>
+                                          <CategoryAxis side="BOTTOM" />
+                                       </xAxis>
+                                       <yAxis>
+                                          <NumberAxis prefHeight="263.0" prefWidth="55.0" side="LEFT" />
+                                       </yAxis>
+                                       <padding>
+                                          <Insets left="32.0" />
+                                       </padding>
+                                    </StackedBarChart>
+                                 </children>
+                              </Pane>
                               <VBox prefHeight="300.0" prefWidth="485.0">
                                  <children>
                                     <TableView fx:id="tableLexique" prefHeight="278.0" prefWidth="458.0">
                                        <columns>
-                                          <TableColumn prefWidth="68.0" text="Origine" />
-                                          <TableColumn prefWidth="85.0" text="Lemme" />
-                                          <TableColumn prefWidth="90.0" text="Émetteur" />
-                                          <TableColumn prefWidth="86.0" text="Récepteur" />
-                                          <TableColumn prefWidth="123.0" text="Date mémorisation" />
+                                          <TableColumn prefWidth="33.0" />
+                                          <TableColumn prefWidth="74.0" text="Lemme" />
+                                          <TableColumn prefWidth="89.0" text="Émetteur" />
+                                          <TableColumn prefWidth="89.0" text="Récepteur" />
+                                          <TableColumn prefWidth="143.0" text="Date mémorisation" />
                                        </columns>
                                     </TableView>
                                  </children>
@@ -130,13 +124,14 @@
                                  <children>
                                     <HBox minWidth="-Infinity" spacing="20.0">
                                        <children>
-                                          <Label text="Type évènement considéré" />
+                                          <Label text="Occurrences à considérer" />
                                           <Region HBox.hgrow="ALWAYS">
                                              <HBox.margin>
                                                 <Insets />
                                              </HBox.margin>
                                           </Region>
                                           <ChoiceBox fx:id="choixTypeEvenementOccurrences" />
+                                          <ChoiceBox fx:id="choixIssueEvenementOccurrences" />
                                        </children>
                                        <VBox.margin>
                                           <Insets bottom="8.0" />
@@ -144,12 +139,13 @@
                                     </HBox>
                                     <TableView fx:id="tableOccurrences" prefHeight="254.0" prefWidth="354.0">
                                        <columns>
-                                          <TableColumn prefWidth="66.0" text="Origine" />
-                                          <TableColumn prefWidth="79.0" text="Lemme" />
-                                          <TableColumn prefWidth="108.0" text="Type" />
-                                          <TableColumn prefWidth="78.0" text="Issue" />
-                                          <TableColumn prefWidth="63.0" text="Date" />
-                                          <TableColumn prefWidth="63.0" text="Évt. n°" />
+                                          <TableColumn prefWidth="28.0" />
+                                          <TableColumn prefWidth="61.0" text="Lemme" />
+                                          <TableColumn prefWidth="86.0" text="Individu" />
+                                          <TableColumn prefWidth="97.0" text="Type" />
+                                          <TableColumn prefWidth="60.0" text="Issue" />
+                                          <TableColumn prefWidth="53.0" text="Date" />
+                                          <TableColumn prefWidth="56.0" text="Évt. n°" />
                                        </columns>
                                     </TableView>
                                  </children>
@@ -157,17 +153,21 @@
                                     <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                                  </padding>
                               </VBox>
-                              <StackedBarChart fx:id="diagrammeEvolutionOccurrences" animated="false" layoutX="534.0" layoutY="11.0" legendSide="LEFT" prefHeight="290.0" prefWidth="720.0">
-                                 <xAxis>
-                                    <CategoryAxis side="BOTTOM" />
-                                 </xAxis>
-                                 <yAxis>
-                                    <NumberAxis prefHeight="263.0" prefWidth="55.0" side="LEFT" />
-                                 </yAxis>
-                                 <padding>
-                                    <Insets left="32.0" />
-                                 </padding>
-                              </StackedBarChart>
+                              <Pane fx:id="conteneurDiagrammeEvolutionOccurrences" layoutX="534.0" layoutY="11.0" prefHeight="290.0" prefWidth="720.0">
+                                 <children>
+                                    <StackedBarChart fx:id="diagrammeEvolutionOccurrences" animated="false" legendSide="LEFT" prefHeight="290.0" prefWidth="720.0">
+                                       <xAxis>
+                                          <CategoryAxis side="BOTTOM" />
+                                       </xAxis>
+                                       <yAxis>
+                                          <NumberAxis prefHeight="263.0" prefWidth="55.0" side="LEFT" />
+                                       </yAxis>
+                                       <padding>
+                                          <Insets left="32.0" />
+                                       </padding>
+                                    </StackedBarChart>
+                                 </children>
+                              </Pane>
                            </children>
                         </AnchorPane>
                      </content>
@@ -183,7 +183,8 @@
    <center>
       <Pane prefHeight="448.0" prefWidth="748.0" BorderPane.alignment="CENTER">
          <children>
-            <Pane fx:id="grapheSysteme" layoutX="28.0" layoutY="14.0" prefHeight="420.0" prefWidth="715.0" />
+            <Pane fx:id="grapheSysteme" layoutX="145.0" layoutY="54.0" prefHeight="340.0" prefWidth="480.0" />
+            <ChoiceBox fx:id="choixPortee" layoutX="16.0" layoutY="16.0" visible="false" />
          </children></Pane>
    </center>
 </BorderPane>

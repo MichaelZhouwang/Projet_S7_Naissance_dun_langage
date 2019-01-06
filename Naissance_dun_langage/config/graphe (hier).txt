@@ -1,0 +1,17 @@
+# Matrice de voisinage
+#
+# Hiérarchiques 9
+# http://graphonline.ru/en/home?graph=QmLhJeXnyjuHDPji
+#
+0 1 1 0 0 0 0 0 0 
+1 0 0 1 1 0 0 0 0 
+1 0 0 0 0 1 0 0 0 
+0 1 0 0 0 0 0 0 0 
+0 1 0 0 0 0 1 1 0 
+0 0 1 0 0 0 0 0 1 
+0 0 0 0 1 0 0 0 0 
+0 0 0 0 1 0 0 0 0 
+0 0 0 0 0 1 0 0 0 
+
+ 
+

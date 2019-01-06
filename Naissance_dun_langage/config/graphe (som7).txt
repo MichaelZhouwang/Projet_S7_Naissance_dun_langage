@@ -1,0 +1,20 @@
+# Matrice de voisinage
+#
+# Cycliques 7
+# http://graphonline.ru/en/home?graph=XokxIjCZJyfBYNTG
+#
+0 1 0 0 1 0 0 
+1 0 1 0 0 0 0 
+0 1 0 1 0 0 0 
+0 0 1 0 0 0 1 
+1 0 0 0 0 1 0 
+0 0 0 0 1 0 1 
+0 0 0 1 0 1 0 
+
+ 
+
+
+ 
+
+ 
+

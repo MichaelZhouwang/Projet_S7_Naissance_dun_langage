@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<systeme nombreIndividus="9" tailleInitialeLexiqueParDefaut="3" tailleMaximaleLexiqueParDefaut="20" urlFichierGraphe="config/graphe (cycl).txt">
+		<implConditionEmissionParDefaut>CONDITION_TOUJOURS_SATISFAITE</implConditionEmissionParDefaut>
+		<implConditionReceptionParDefaut>CONDITION_PROBABILITE_UNIFORME</implConditionReceptionParDefaut>
+		<implConditionMemorisationParDefaut>CONDITION_PROBABILITE_UNIFORME</implConditionMemorisationParDefaut>
+		<implStrategieSelectionEmissionParDefaut>SELECTION_LEMME_ALEATOIRE</implStrategieSelectionEmissionParDefaut>
+		<implStrategieSelectionEliminationParDefaut>SELECTION_LEMME_ALEATOIRE</implStrategieSelectionEliminationParDefaut>
+		<implStrategieSuccessionParDefaut>SUCCESSION_VOISIN_ALEATOIRE</implStrategieSuccessionParDefaut>
+		<typeCritereArret>TOUS_LEXIQUES_PLEINS</typeCritereArret>
+	</systeme>
+
+</config>

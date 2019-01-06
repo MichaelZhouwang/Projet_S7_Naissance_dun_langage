@@ -1,0 +1,18 @@
+# Matrice de voisinage
+#
+# Cycliques 9
+# http://graphonline.ru/en/home?graph=FoFBXwIzoitJpnsu
+#
+0 5 0 0 0 0 0 0 5 
+5 0 5 0 0 0 0 0 0 
+0 5 0 5 0 0 0 0 0 
+0 0 5 0 5 0 0 0 0 
+0 0 0 5 0 5 0 0 0 
+0 0 0 0 5 0 5 0 0 
+0 0 0 0 0 5 0 5 0 
+0 0 0 0 0 0 5 0 5 
+5 0 0 0 0 0 0 5 0 
+ 
+
+ 
+

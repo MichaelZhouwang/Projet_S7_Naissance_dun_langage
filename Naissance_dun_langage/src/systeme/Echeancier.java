@@ -3,19 +3,37 @@ package systeme;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import evenement.modele.Evenement;
+import exception.EcheancierException;
 import systeme.enumeration.TypeCritereArret;
-import temps.Date;
+import systeme.evenement.modele.Evenement;
+import systeme.temps.Date;
 
+/**
+ * La structure de donnees, accessible seulement depuis le systeme, qui stocke et declenche les evenements
+ * L'utilisation de la classe TreeMap permet de conserver l'ordre d'insertion des evenements selon leur date
+ * 
+ * @author Charles MECHERIKI & Yongda LIN
+ *
+ */
 public class Echeancier extends TreeMap<Date, ArrayList<Evenement>>  {
 	private static final long serialVersionUID = 1L;
 
+	private final int evenementsDeclenchesMaxAvantInterruption = 2000;
 	private int evenementsDeclenches;
 	
+	/**
+	 * Initialise l'echeancier
+	 */
 	public Echeancier() {
 		evenementsDeclenches = 0;
 	}
 
+	/**
+	 * Ajoute l'evenement passe en parametre a l'echeancier en premier a la date donnee
+	 * 
+	 * @param evenement	l'evenement a ajouter a l'echeancier
+	 * @param date		la date de l'evenement
+	 */
 	public void ajouterPremierEvenementEnDate(Evenement evenement, Date date) {
 		ArrayList<Evenement> liste = get(date);
 		
@@ -29,6 +47,12 @@ public class Echeancier extends TreeMap<Date, ArrayList<Evenement>>  {
 		}
 	}
 	
+	/**
+	 * Ajoute l'evenement passe en parametre a l'echeancier en dernier a la date donnee
+	 * 
+	 * @param evenement	l'evenement a ajouter a l'echeancier
+	 * @param date		la date de l'evenement
+	 */
 	public void ajouterDernierEvenementEnDate(Evenement evenement, Date date) {
 		ArrayList<Evenement> liste = get(date);
 
@@ -42,11 +66,21 @@ public class Echeancier extends TreeMap<Date, ArrayList<Evenement>>  {
 		}
 	}
 	
+	/**
+	 * Renvoie la date du prochain evenement de l'echeancier
+	 * 
+	 * @return la date du prochain evenement de l'echeancier
+	 */
 	public Date dateProchainEvenement() {
 		return firstKey();
 	}
 	
-	public void declencherProchainEvenement() {
+	/**
+	 * Declenche le prochain evenement de l'echeancier
+	 * 
+	 * @throws Exception	si l'etat de l'echeancier est incoherent (plus d'evenement a declencher)
+	 */
+	public void declencherProchainEvenement() throws Exception {
 		Date prochaineDate = firstKey();
 		ArrayList<Evenement> listeEvenements = get(prochaineDate);
 		
@@ -62,23 +96,27 @@ public class Echeancier extends TreeMap<Date, ArrayList<Evenement>>  {
 					remove(prochaineDate);
 				}
 
-				if (Systeme.lireTypeCritereArret() == TypeCritereArret.DATE && prochaineDate.lireValeur() == Systeme.lireObjectifCritereArret()) {
-					Systeme.declencherEvenementFinal(evenement);
+				if (Systeme.lireTypeCritereArret() == TypeCritereArret.DATE_ATTEINTE && prochaineDate.lireValeur() >= Systeme.lireObjectifCritereArret()) {
+					Systeme.declencherEvenementFinal(evenement, Systeme.lireTypeCritereArret() + " = " + Systeme.lireObjectifCritereArret());
 				}
 
 				evenementsDeclenches++;
-				if (Systeme.lireTypeCritereArret() == TypeCritereArret.ITERATIONS && evenementsDeclenches == Systeme.lireObjectifCritereArret()) {
-					Systeme.declencherEvenementFinal(evenement);
+				if (Systeme.lireTypeCritereArret() == TypeCritereArret.EVENEMENTS_DECLENCHES && evenementsDeclenches >= Systeme.lireObjectifCritereArret()) {
+					Systeme.declencherEvenementFinal(evenement, Systeme.lireTypeCritereArret() + " = " + Systeme.lireObjectifCritereArret());
+				}
+				
+				if (evenementsDeclenches > evenementsDeclenchesMaxAvantInterruption) {
+					Systeme.declencherEvenementFinal(evenement, "Interruption (" + evenementsDeclenchesMaxAvantInterruption + " ev. generes)");
 				}
 
 				evenement.declencher();
 			}
 			else {
-				System.out.println("Pas d'evenement trouve, fin de la simulation");
+				throw new EcheancierException("Situation anormale : aucun evenement a declencher", null);
 			}
 		}
 		else {
-			System.out.println("Pas d'evenement trouve, fin de la simulation");
+			throw new EcheancierException("Situation anormale : aucun evenement a declencher", null);
 		}
 	}
 }
